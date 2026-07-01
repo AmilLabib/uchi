@@ -12,6 +12,9 @@ export interface Perfume {
   purchaseDate: string
   image?: string
   description?: string
+  spotifyUrl?: string
+  qrCode?: string
+  verified?: boolean
 }
 
 export interface Moment {
@@ -47,6 +50,75 @@ export interface TimelineEvent {
   image?: string
 }
 
+// === Scent of The Soul ===
+export interface ScentPhoto {
+  id: string
+  perfumeId: string
+  url: string
+  caption?: string
+  date: string
+}
+
+export interface ScentComment {
+  id: string
+  perfumeId: string
+  author: string
+  text: string
+  date: string
+  likes: number
+}
+
+// === Find Your Soul ===
+export interface UchiCatalogItem {
+  id: string
+  name: string
+  category: Perfume['category']
+  image: string
+  notes: {
+    top: string[]
+    middle: string[]
+    base: string[]
+  }
+  story: string
+  aromaImages: string[] // emoji/icon representations
+  mood: string[]
+  occasion: string[]
+  gender: 'unisex' | 'masculine' | 'feminine'
+  price: string
+  shopLinks: {
+    shopee?: string
+    tokopedia?: string
+    tiktok?: string
+  }
+  spotifyUrl?: string
+}
+
+export interface AIRecommendation {
+  perfumeId: string
+  reason: string
+  matchScore: number
+}
+
+// === UchiMate ===
+export interface UserProfile {
+  name: string
+  email: string
+  phone: string
+  avatar?: string
+  theme: 'dark' | 'light'
+  purchaseHistory: PurchaseRecord[]
+  joinDate: string
+}
+
+export interface PurchaseRecord {
+  id: string
+  perfumeName: string
+  date: string
+  price: string
+  platform: 'shopee' | 'tokopedia' | 'tiktok' | 'offline'
+}
+
+// === Existing ===
 export type MoodColor = {
   [key in Moment['mood']]: string
 }

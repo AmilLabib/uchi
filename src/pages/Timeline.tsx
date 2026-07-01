@@ -7,10 +7,10 @@ import type { TimelineEvent } from '../types'
 
 gsap.registerPlugin(ScrollTrigger)
 
-const typeConfig: Record<TimelineEvent['type'], { icon: typeof ShoppingBag; color: string; bgColor: string; label: string; emoji: string }> = {
-  purchase: { icon: ShoppingBag, color: 'text-gold', bgColor: 'bg-gold/10', label: 'Pembelian', emoji: '🛍️' },
-  moment: { icon: Camera, color: 'text-rose', bgColor: 'bg-rose/10', label: 'Momen', emoji: '📸' },
-  journal: { icon: BookOpen, color: 'text-sage', bgColor: 'bg-sage/10', label: 'Jurnal', emoji: '📝' },
+const typeConfig: Record<TimelineEvent['type'], { icon: typeof ShoppingBag; color: string; borderColor: string; label: string }> = {
+  purchase: { icon: ShoppingBag, color: 'text-accent', borderColor: 'border-accent/30', label: 'Pembelian' },
+  moment: { icon: Camera, color: 'text-rose', borderColor: 'border-rose/30', label: 'Momen' },
+  journal: { icon: BookOpen, color: 'text-sage', borderColor: 'border-sage/30', label: 'Jurnal' },
 }
 
 export default function Timeline() {
@@ -44,7 +44,6 @@ export default function Timeline() {
           )
         })
 
-        // Animate the timeline line growing
         const line = containerRef.current.querySelector('.timeline-line')
         if (line) {
           gsap.fromTo(line,
@@ -78,45 +77,45 @@ export default function Timeline() {
   }, {})
 
   return (
-    <div className="min-h-screen pt-24 md:pt-28 pb-20 px-4 sm:px-6">
+    <div className="min-h-screen pt-28 md:pt-32 pb-20 px-6">
       <div className="max-w-4xl mx-auto">
         {/* Header */}
-        <div className="page-header text-center mb-10 md:mb-14">
-          <span className="text-xs font-medium text-warm-brown tracking-widest uppercase">Perjalanan</span>
-          <h1 className="font-serif text-4xl sm:text-5xl md:text-6xl text-deep-brown font-light mt-3">
-            Fragrance <span className="italic text-warm-brown">Timeline</span>
+        <div className="page-header text-center mb-12 md:mb-16">
+          <span className="text-xs font-medium tracking-[0.3em] uppercase text-accent">Journey</span>
+          <h1 className="font-serif text-4xl sm:text-5xl md:text-6xl text-text-primary font-medium mt-4">
+            Fragrance <span className="italic text-gradient">Timeline</span>
           </h1>
-          <p className="mt-4 text-muted max-w-md mx-auto text-sm md:text-base">
+          <p className="mt-4 text-text-secondary max-w-md mx-auto text-sm md:text-base">
             Perjalanan wangimu dalam satu garis waktu. Setiap titik adalah cerita.
           </p>
         </div>
 
         {timeline.length === 0 ? (
-          <div className="text-center py-24">
-            <div className="w-20 h-20 mx-auto rounded-full bg-warm-brown/10 flex items-center justify-center mb-5">
-              <Clock className="w-9 h-9 text-warm-brown/50" />
+          <div className="text-center py-28">
+            <div className="w-20 h-20 mx-auto border border-accent/20 flex items-center justify-center mb-6">
+              <Clock className="w-9 h-9 text-accent/40" />
             </div>
-            <p className="text-muted font-serif text-xl">Timeline masih kosong</p>
-            <p className="text-sm text-muted/60 mt-2">
+            <p className="text-text-secondary font-serif text-xl">Timeline masih kosong</p>
+            <p className="text-sm text-text-muted mt-2">
               Tambahkan parfum, momen, atau jurnal untuk memulai timeline
             </p>
           </div>
         ) : (
           <div ref={containerRef} className="relative">
             {/* Center line */}
-            <div className="timeline-line absolute left-6 md:left-1/2 top-0 bottom-0 w-px bg-gradient-to-b from-gold via-gold/40 to-transparent origin-top md:-translate-x-px" />
+            <div className="timeline-line absolute left-6 md:left-1/2 top-0 bottom-0 w-px bg-gradient-to-b from-accent/50 via-accent/20 to-transparent origin-top md:-translate-x-px" />
 
             {Object.entries(grouped).map(([monthKey, events]) => {
               const date = new Date(monthKey + '-01')
               const monthLabel = date.toLocaleDateString('id-ID', { month: 'long', year: 'numeric' })
 
               return (
-                <div key={monthKey} className="mb-14">
+                <div key={monthKey} className="mb-16">
                   {/* Month label */}
                   <div className="relative flex items-center mb-8">
-                    <div className="absolute left-6 md:left-1/2 w-4 h-4 -translate-x-2 md:-translate-x-2 rounded-full bg-gold border-4 border-cream z-10 shadow-sm" />
+                    <div className="absolute left-6 md:left-1/2 w-3 h-3 -translate-x-1.5 md:-translate-x-1.5 bg-accent z-10" />
                     <div className="ml-14 md:ml-0 md:text-center md:w-full">
-                      <span className="inline-block px-5 py-2 bg-white/70 backdrop-blur-sm border border-gold/20 rounded-full text-xs font-medium text-warm-brown tracking-wider shadow-sm">
+                      <span className="inline-block px-5 py-2 bg-surface-card border border-accent/20 text-xs font-medium text-accent tracking-[0.2em] uppercase">
                         {monthLabel}
                       </span>
                     </div>
@@ -139,28 +138,31 @@ export default function Timeline() {
                           }`}
                         >
                           {/* Dot on line */}
-                          <div className="absolute left-[-2rem] md:left-1/2 top-6 w-3 h-3 -translate-x-1.5 md:-translate-x-1.5 rounded-full border-2 border-gold/50 bg-cream z-10" />
+                          <div className="absolute left-[-2rem] md:left-1/2 top-6 w-2 h-2 -translate-x-1 md:-translate-x-1 border border-accent/50 bg-primary z-10" />
 
                           {/* Content card */}
-                          <div className="p-5 rounded-2xl bg-white/80 backdrop-blur-sm border border-gold-light/20 hover:border-gold/25 hover:shadow-lg hover:shadow-gold/5 transition-all duration-500 group">
-                            <div className="flex items-start gap-3">
-                              <div className={`p-2 rounded-xl ${config.bgColor} flex-shrink-0`}>
+                          <div className="p-6 bg-surface-card border border-border hover:border-accent/20 hover-glow transition-all duration-500 group">
+                            <div className="flex items-start gap-4">
+                              <div className={`p-2.5 border ${config.borderColor} flex-shrink-0`}>
                                 <Icon className={`w-4 h-4 ${config.color}`} />
                               </div>
                               <div className="flex-1 min-w-0">
-                                <div className="flex items-center gap-2 mb-1">
-                                  <span className="text-[11px] text-muted/60 font-medium uppercase tracking-wider">{config.label}</span>
-                                  <span className="text-[11px] text-muted/40">
+                                <div className="flex items-center gap-2 mb-1.5">
+                                  <span className="text-[11px] text-text-muted font-medium uppercase tracking-wider">{config.label}</span>
+                                  <span className="text-[11px] text-text-muted/40">•</span>
+                                  <span className="text-[11px] text-text-muted/60">
                                     {new Date(event.date).toLocaleDateString('id-ID', { day: 'numeric', month: 'short' })}
                                   </span>
                                 </div>
-                                <h4 className="font-serif text-base text-deep-brown leading-tight">{event.title}</h4>
-                                <p className="text-xs text-muted mt-1.5 leading-relaxed line-clamp-2">
+                                <h4 className="font-serif text-base text-text-primary leading-tight group-hover:text-accent transition-colors duration-300">
+                                  {event.title}
+                                </h4>
+                                <p className="text-xs text-text-secondary mt-2 leading-relaxed line-clamp-2">
                                   {event.description}
                                 </p>
                                 {perfumeName && (
-                                  <div className="mt-2.5 inline-flex items-center gap-1.5 px-2.5 py-0.5 bg-gold/8 rounded-full text-[11px] text-gold font-medium">
-                                    <span className="w-1 h-1 rounded-full bg-gold" />
+                                  <div className="mt-3 inline-flex items-center gap-1.5 px-2.5 py-0.5 border border-accent/15 text-[11px] text-accent font-medium tracking-wider">
+                                    <span className="w-1 h-1 bg-accent" />
                                     {perfumeName}
                                   </div>
                                 )}

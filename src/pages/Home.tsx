@@ -1,38 +1,38 @@
 import { Link } from 'react-router-dom'
-import { Droplets, Camera, BookOpen, Clock, Sparkles, ArrowRight, Heart } from 'lucide-react'
+import { ArrowRight, Droplets, Camera, BookOpen, Clock } from 'lucide-react'
 
 const features = [
   {
     icon: Droplets,
-    title: 'Koleksi Parfum',
-    description: 'Catat setiap parfum Uchi yang kamu miliki. Simpan detail aroma, rating, dan kenanganmu.',
-    link: '/collection',
-    gradient: 'from-gold/20 to-gold-light/10',
-    iconColor: 'text-gold',
+    title: 'Scent of The Soul',
+    subtitle: 'Your Fragrance Identity',
+    description: 'Lihat jati dirimu melalui aroma. Koleksi parfum, soundtrack Spotify, galeri kenangan, dan share ke sosial media.',
+    link: '/scent-of-the-soul',
+    number: '01',
   },
   {
     icon: Camera,
-    title: 'Momen Berharga',
-    description: 'Abadikan momen-momen spesial yang kamu lalui bersama wangi favoritmu.',
-    link: '/moments',
-    gradient: 'from-rose/20 to-rose-light/10',
-    iconColor: 'text-rose',
+    title: 'Find Your Soul',
+    subtitle: 'AI Recommendation',
+    description: 'Temukan parfum UCHI yang paling cocok dengan aktivitas, mood, dan kepribadianmu melalui rekomendasi cerdas.',
+    link: '/find-your-soul',
+    number: '02',
   },
   {
     icon: BookOpen,
-    title: 'Scent Journal',
-    description: 'Tulis perjalanan aromamu. Catat mood, cuaca, dan occasion setiap kali memakai parfum.',
-    link: '/journal',
-    gradient: 'from-sage/20 to-sage/5',
-    iconColor: 'text-sage',
+    title: 'Collection & Journal',
+    subtitle: 'Scent Diary',
+    description: 'Catat koleksi parfummu, tulis jurnal harian, dan abadikan momen-momen berharga bersama wangimu.',
+    link: '/collection',
+    number: '03',
   },
   {
     icon: Clock,
-    title: 'Fragrance Timeline',
-    description: 'Lihat perjalanan wangimu dalam bentuk timeline yang indah dan personal.',
-    link: '/timeline',
-    gradient: 'from-warm-brown/20 to-warm-brown/5',
-    iconColor: 'text-warm-brown',
+    title: 'UchiMate',
+    subtitle: 'Personalization',
+    description: 'Personalisasi pengalaman UCHI-mu. Atur profil, riwayat pembelian, dan tema tampilan.',
+    link: '/uchiMate',
+    number: '04',
   },
 ]
 
@@ -40,154 +40,114 @@ export default function Home() {
   return (
     <div className="overflow-hidden">
       {/* Hero Section */}
-      <section className="relative min-h-screen flex items-center justify-center px-4 sm:px-6 pt-20 pb-12">
-        {/* Background orbs */}
-        <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <div className="absolute top-[15%] left-[10%] w-[300px] h-[300px] rounded-full bg-gradient-to-br from-gold/15 to-transparent blur-3xl animate-pulse-soft" />
-          <div className="absolute top-[30%] right-[5%] w-[400px] h-[400px] rounded-full bg-gradient-to-br from-rose/10 to-transparent blur-3xl animate-pulse-soft [animation-delay:1s]" />
-          <div className="absolute bottom-[20%] left-[30%] w-[250px] h-[250px] rounded-full bg-gradient-to-br from-sage/10 to-transparent blur-3xl animate-pulse-soft [animation-delay:2s]" />
-        </div>
+      <section className="relative min-h-screen flex items-center justify-center px-6">
+        {/* Background effects */}
+        <div className="absolute inset-0 bg-hero-glow" />
+        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[600px] h-[600px] rounded-full bg-accent/5 blur-[120px]" />
+        <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-accent/20 to-transparent" />
 
-        {/* Subtle grid pattern */}
-        <div
-          className="absolute inset-0 pointer-events-none opacity-[0.03]"
-          style={{
-            backgroundImage: `radial-gradient(circle, #8B6F4E 1px, transparent 1px)`,
-            backgroundSize: '40px 40px',
-          }}
-        />
+        {/* Decorative lines */}
+        <div className="absolute top-0 left-1/4 w-px h-full bg-gradient-to-b from-transparent via-border to-transparent opacity-30" />
+        <div className="absolute top-0 right-1/4 w-px h-full bg-gradient-to-b from-transparent via-border to-transparent opacity-30" />
 
-        <div className="relative w-full max-w-6xl mx-auto flex flex-col lg:flex-row items-center gap-12 lg:gap-16">
-          {/* Left: Text */}
-          <div className="flex-1 text-center lg:text-left animate-fade-in">
-            {/* Badge */}
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/60 backdrop-blur-sm border border-gold/20 mb-8 shadow-sm">
-              <Sparkles className="w-4 h-4 text-gold" />
-              <span className="text-xs font-medium text-warm-brown tracking-wider uppercase">
-                Uchi Parfume Experience
-              </span>
-            </div>
-
-            <h1 className="font-serif text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-light text-deep-brown leading-[1.1]">
-              Jejak{' '}
-              <span className="italic text-gold relative">
-                Wangi
-                <svg className="absolute -bottom-2 left-0 w-full h-3 text-gold/30" viewBox="0 0 200 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M2 8C30 4 60 2 100 5C140 8 170 4 198 6" stroke="currentColor" strokeWidth="3" strokeLinecap="round" />
-                </svg>
-              </span>
-            </h1>
-            <p className="font-serif text-3xl sm:text-4xl md:text-5xl text-warm-brown/80 font-light mt-2">
-              Ceritamu
-            </p>
-
-            <p className="mt-6 md:mt-8 text-base md:text-lg text-muted max-w-xl leading-relaxed mx-auto lg:mx-0">
-              Setiap aroma menyimpan cerita. Abadikan perjalanan wangimu bersama Uchi Parfume —
-              dari koleksi pertama hingga momen-momen yang tak terlupakan.
-            </p>
-
-            <div className="mt-8 md:mt-10 flex flex-col sm:flex-row items-center gap-4 justify-center lg:justify-start">
-              <Link
-                to="/collection"
-                className="group relative flex items-center gap-2 px-8 py-4 bg-charcoal text-cream rounded-full text-sm font-medium tracking-wide overflow-hidden transition-all duration-300 hover:shadow-xl hover:shadow-charcoal/20 hover:scale-[1.02]"
-              >
-                <span className="relative z-10 flex items-center gap-2">
-                  Mulai Perjalanan
-                  <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-300" />
-                </span>
-                <span className="absolute inset-0 bg-gradient-to-r from-deep-brown to-charcoal opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-              </Link>
-              <a
-                href="https://uchiparfume.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-2 px-8 py-4 bg-white/50 backdrop-blur-sm border border-gold/30 text-warm-brown rounded-full text-sm font-medium tracking-wide hover:bg-white/80 hover:border-gold/50 transition-all duration-300"
-              >
-                Kunjungi Uchi Parfume
-              </a>
-            </div>
+        <div className="relative w-full max-w-6xl mx-auto text-center pt-24">
+          {/* Subtitle */}
+          <div className="animate-fade-up">
+            <span className="inline-block text-xs font-medium tracking-[0.3em] uppercase text-accent mb-8">
+              Uchi Personal Lab
+            </span>
           </div>
 
-          {/* Right: Visual illustration */}
-          <div className="flex-shrink-0 relative w-[280px] h-[340px] sm:w-[320px] sm:h-[380px] lg:w-[380px] lg:h-[440px] animate-fade-in [animation-delay:0.3s]">
-            {/* Main perfume bottle shape */}
-            <div className="absolute inset-0 flex items-center justify-center">
-              <div className="relative">
-                {/* Glow behind */}
-                <div className="absolute inset-0 bg-gradient-to-b from-gold/20 to-rose/10 rounded-[60px] blur-2xl scale-110" />
-                {/* Bottle body */}
-                <div className="relative w-[180px] h-[280px] sm:w-[200px] sm:h-[300px] lg:w-[240px] lg:h-[360px] bg-gradient-to-b from-white/80 via-cream to-gold-light/30 rounded-[40px] border border-gold/20 shadow-2xl backdrop-blur-sm flex flex-col items-center justify-center overflow-hidden">
-                  {/* Glass reflection */}
-                  <div className="absolute top-0 left-0 w-1/2 h-full bg-gradient-to-r from-white/40 to-transparent rounded-l-[40px]" />
-                  {/* Cap */}
-                  <div className="absolute -top-4 left-1/2 -translate-x-1/2 w-12 h-10 bg-gradient-to-b from-gold to-warm-brown rounded-t-lg rounded-b-sm shadow-md" />
-                  {/* Label area */}
-                  <div className="relative z-10 text-center px-6">
-                    <Droplets className="w-8 h-8 text-gold mx-auto mb-3" />
-                    <p className="font-serif text-lg sm:text-xl text-deep-brown font-medium">Uchi</p>
-                    <p className="font-serif text-xs text-warm-brown/60 italic mt-1">Parfume</p>
-                    <div className="w-12 h-px bg-gold/40 mx-auto mt-3" />
-                    <p className="text-[10px] text-muted/50 mt-2 tracking-widest uppercase">Est. 2005</p>
-                  </div>
-                  {/* Liquid */}
-                  <div className="absolute bottom-0 left-0 right-0 h-[40%] bg-gradient-to-t from-gold/25 to-transparent rounded-b-[40px]" />
-                </div>
-              </div>
-            </div>
+          {/* Main heading */}
+          <h1 className="animate-fade-up [animation-delay:0.2s] opacity-0 font-serif text-5xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-9xl font-medium text-text-primary leading-[0.9] tracking-tight">
+            Kenali{' '}
+            <span className="italic text-gradient">Jiwamu</span>
+            <br />
+            <span className="text-text-secondary font-light">Lewat Aroma</span>
+          </h1>
 
-            {/* Floating particles */}
-            <div className="absolute top-10 right-4 w-3 h-3 rounded-full bg-gold/40 animate-float" />
-            <div className="absolute top-1/3 left-2 w-2 h-2 rounded-full bg-rose/40 animate-float [animation-delay:1s]" />
-            <div className="absolute bottom-16 right-8 w-2.5 h-2.5 rounded-full bg-sage/40 animate-float [animation-delay:2s]" />
-            <div className="absolute bottom-1/4 left-6 w-2 h-2 rounded-full bg-gold-light/60 animate-float [animation-delay:3s]" />
+          {/* Description */}
+          <p className="animate-fade-up [animation-delay:0.4s] opacity-0 mt-8 md:mt-12 text-base md:text-lg text-text-secondary max-w-xl mx-auto leading-relaxed">
+            Platform terintegrasi untuk mengenal jati dirimu melalui aroma.
+            Temukan, abadikan, dan bagikan perjalanan wangimu bersama UCHI Parfume.
+          </p>
+
+          {/* CTA Buttons */}
+          <div className="animate-fade-up [animation-delay:0.6s] opacity-0 mt-10 md:mt-14 flex flex-col sm:flex-row items-center gap-4 justify-center">
+            <Link
+              to="/find-your-soul"
+              className="group flex items-center gap-3 px-8 py-4 bg-accent text-primary text-sm font-semibold tracking-wider uppercase transition-all duration-300 hover:bg-accent-light hover:shadow-lg hover:shadow-accent/20"
+            >
+              Temukan Aromamu
+              <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-300" />
+            </Link>
+            <Link
+              to="/scent-of-the-soul"
+              className="flex items-center gap-3 px-8 py-4 border border-border text-text-secondary text-sm font-medium tracking-wider uppercase hover:border-accent/40 hover:text-accent transition-all duration-300"
+            >
+              Lihat Profilmu
+            </Link>
           </div>
-        </div>
 
-        {/* Scroll indicator */}
-        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 opacity-60">
-          <span className="text-[10px] text-muted tracking-widest uppercase">Scroll</span>
-          <div className="w-px h-8 bg-gradient-to-b from-gold to-transparent" />
+          {/* Scroll indicator */}
+          <div className="absolute bottom-12 left-1/2 -translate-x-1/2 flex flex-col items-center gap-3">
+            <span className="text-[10px] text-text-muted tracking-[0.3em] uppercase">Scroll</span>
+            <div className="w-px h-12 bg-gradient-to-b from-accent/50 to-transparent" />
+          </div>
         </div>
       </section>
 
       {/* Features Section */}
-      <section className="py-20 md:py-32 px-4 sm:px-6 relative">
-        {/* Section divider */}
-        <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-gold-light/40 to-transparent" />
+      <section className="py-24 md:py-36 px-6 relative">
+        <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-border to-transparent" />
 
         <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-16 md:mb-20">
-            <span className="text-xs font-medium text-gold tracking-widest uppercase">Fitur</span>
-            <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl text-deep-brown font-light mt-3">
-              Semua yang Kamu Butuhkan
+          {/* Section header */}
+          <div className="text-center mb-20">
+            <span className="text-xs font-medium tracking-[0.3em] uppercase text-accent">Features</span>
+            <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl text-text-primary font-medium mt-4">
+              Semua yang Kamu <span className="italic text-gradient">Butuhkan</span>
             </h2>
-            <p className="mt-4 text-muted max-w-md mx-auto text-sm md:text-base">
-              Rekam, ceritakan, dan rayakan setiap perjalanan wangimu
-            </p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-7">
+          {/* Feature grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-px bg-border">
             {features.map((feature) => (
               <Link
                 key={feature.title}
                 to={feature.link}
-                className="group relative p-7 md:p-8 rounded-3xl bg-white/90 backdrop-blur-sm border border-gold-light/30 shadow-lg shadow-charcoal/[0.04] hover:border-gold/50 transition-all duration-500 hover:shadow-2xl hover:shadow-gold/15 hover:-translate-y-3"
+                className="group relative p-10 md:p-12 bg-primary hover:bg-surface-card transition-all duration-500"
               >
-                {/* Gradient background on hover */}
-                <div className={`absolute inset-0 rounded-3xl bg-gradient-to-br ${feature.gradient} opacity-0 group-hover:opacity-100 transition-opacity duration-500`} />
+                {/* Number */}
+                <span className="absolute top-8 right-8 text-6xl font-serif font-bold text-accent/5 group-hover:text-accent/10 transition-colors duration-500">
+                  {feature.number}
+                </span>
 
                 <div className="relative z-10">
-                  <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-white to-cream border border-gold-light/40 flex items-center justify-center mb-6 shadow-sm group-hover:scale-110 group-hover:shadow-lg group-hover:shadow-gold/15 transition-all duration-300">
-                    <feature.icon className={`w-7 h-7 ${feature.iconColor}`} />
+                  {/* Icon */}
+                  <div className="w-12 h-12 border border-accent/30 flex items-center justify-center mb-6 group-hover:border-accent group-hover:bg-accent/5 transition-all duration-300">
+                    <feature.icon className="w-5 h-5 text-accent" />
                   </div>
-                  <h3 className="font-serif text-xl text-deep-brown mb-3 group-hover:text-deep-brown font-medium">
+
+                  {/* Subtitle */}
+                  <span className="text-[11px] font-medium tracking-widest uppercase text-text-muted">
+                    {feature.subtitle}
+                  </span>
+
+                  {/* Title */}
+                  <h3 className="font-serif text-2xl text-text-primary mt-2 mb-4 group-hover:text-accent transition-colors duration-300">
                     {feature.title}
                   </h3>
-                  <p className="text-sm text-muted leading-relaxed">
+
+                  {/* Description */}
+                  <p className="text-sm text-text-secondary leading-relaxed max-w-sm">
                     {feature.description}
                   </p>
-                  <div className="mt-6 flex items-center gap-2 text-xs font-semibold text-gold opacity-0 group-hover:opacity-100 transition-all duration-300 translate-y-2 group-hover:translate-y-0">
-                    Jelajahi <ArrowRight className="w-3.5 h-3.5" />
+
+                  {/* Arrow */}
+                  <div className="mt-6 flex items-center gap-2 text-accent opacity-0 group-hover:opacity-100 translate-x-[-10px] group-hover:translate-x-0 transition-all duration-300">
+                    <span className="text-xs font-medium tracking-wider uppercase">Explore</span>
+                    <ArrowRight className="w-4 h-4" />
                   </div>
                 </div>
               </Link>
@@ -197,56 +157,48 @@ export default function Home() {
       </section>
 
       {/* Quote Section */}
-      <section className="py-24 md:py-36 px-4 sm:px-6 bg-charcoal relative overflow-hidden">
-        {/* Decorative lines */}
-        <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-gold/40 to-transparent" />
-        <div className="absolute bottom-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-gold/40 to-transparent" />
+      <section className="py-28 md:py-40 px-6 relative overflow-hidden">
+        <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-border to-transparent" />
+        <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-border to-transparent" />
 
-        {/* Background pattern */}
-        <div
-          className="absolute inset-0 opacity-[0.02]"
-          style={{
-            backgroundImage: `radial-gradient(circle, #C9A96E 1px, transparent 1px)`,
-            backgroundSize: '30px 30px',
-          }}
-        />
+        {/* Background glow */}
+        <div className="absolute inset-0 bg-hero-glow opacity-50" />
 
-        <div className="max-w-3xl mx-auto text-center relative">
-          <div className="mb-8">
-            <div className="w-16 h-16 mx-auto rounded-full bg-gold/10 border border-gold/20 flex items-center justify-center">
-              <Heart className="w-7 h-7 text-gold" />
-            </div>
-          </div>
-          <blockquote className="font-serif text-2xl sm:text-3xl md:text-4xl text-cream/90 font-light italic leading-relaxed">
-            "Wangi adalah bahasa yang tak terucapkan — ia menyentuh kenangan, membangkitkan perasaan, dan menandai momen yang tak ingin kau lupakan."
+        <div className="max-w-4xl mx-auto text-center relative">
+          {/* Decorative quote mark */}
+          <div className="text-8xl font-serif text-accent/10 leading-none mb-8">"</div>
+
+          <blockquote className="font-serif text-2xl sm:text-3xl md:text-4xl lg:text-5xl text-text-primary font-light italic leading-[1.3]">
+            Wangi adalah bahasa yang tak terucapkan — ia menyentuh kenangan dan menandai momen yang tak ingin kau lupakan.
           </blockquote>
-          <p className="mt-8 text-gold/60 text-sm tracking-widest uppercase">
-            — Uchi Parfume
-          </p>
+
+          <div className="mt-10 flex items-center justify-center gap-4">
+            <div className="w-12 h-px bg-accent/40" />
+            <p className="text-xs text-accent tracking-[0.3em] uppercase font-medium">
+              Uchi Parfume
+            </p>
+            <div className="w-12 h-px bg-accent/40" />
+          </div>
         </div>
       </section>
 
       {/* Stats Section */}
-      <section className="py-24 md:py-36 px-4 sm:px-6 relative bg-gradient-to-b from-cream-dark/40 to-cream">
-        <div className="max-w-5xl mx-auto">
-          <div className="text-center mb-14">
-            <span className="text-xs font-medium text-gold tracking-widest uppercase">Dalam Angka</span>
-            <h2 className="font-serif text-3xl sm:text-4xl text-deep-brown font-light mt-3">
-              Perjalanan Uchi
-            </h2>
-          </div>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12">
+      <section className="py-24 md:py-32 px-6 relative">
+        <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-border to-transparent" />
+
+        <div className="max-w-6xl mx-auto">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-px bg-border">
             {[
               { number: '500+', label: 'Varian Aroma' },
               { number: '2005', label: 'Berdiri Sejak' },
               { number: '∞', label: 'Momen Berharga' },
               { number: '1', label: 'Ceritamu' },
             ].map((stat, i) => (
-              <div key={i} className="text-center p-6 rounded-2xl bg-white/60 border border-gold-light/20 shadow-sm">
-                <p className="font-serif text-4xl sm:text-5xl md:text-6xl text-gold font-light leading-none">
+              <div key={i} className="bg-primary p-8 md:p-12 text-center">
+                <p className="font-serif text-4xl sm:text-5xl md:text-6xl text-gradient font-medium leading-none">
                   {stat.number}
                 </p>
-                <p className="mt-4 text-xs text-muted tracking-wider uppercase font-medium">
+                <p className="mt-4 text-xs text-text-muted tracking-widest uppercase font-medium">
                   {stat.label}
                 </p>
               </div>
@@ -256,25 +208,25 @@ export default function Home() {
       </section>
 
       {/* Final CTA */}
-      <section className="py-24 md:py-36 px-4 sm:px-6 relative">
-        {/* Top divider */}
-        <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-gold-light/40 to-transparent" />
+      <section className="py-28 md:py-40 px-6 relative">
+        <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-border to-transparent" />
+        <div className="absolute inset-0 bg-hero-glow opacity-30" />
 
-        <div className="max-w-2xl mx-auto text-center">
-          <div className="w-16 h-16 mx-auto rounded-full bg-gold/10 border border-gold/20 flex items-center justify-center mb-8">
-            <Sparkles className="w-7 h-7 text-gold" />
-          </div>
-          <h2 className="font-serif text-3xl md:text-5xl text-deep-brown font-light">
-            Siap Memulai Perjalananmu?
+        <div className="max-w-2xl mx-auto text-center relative">
+          <span className="text-xs font-medium tracking-[0.3em] uppercase text-accent mb-6 block">
+            Begin Your Journey
+          </span>
+          <h2 className="font-serif text-3xl md:text-5xl lg:text-6xl text-text-primary font-medium leading-tight">
+            Siap Mengenal <span className="italic text-gradient">Jiwamu?</span>
           </h2>
-          <p className="mt-5 text-muted text-base md:text-lg max-w-md mx-auto">
-            Setiap wangi memiliki cerita. Mulai tulis ceritamu sekarang.
+          <p className="mt-6 text-text-secondary text-base md:text-lg max-w-md mx-auto">
+            Setiap wangi memiliki cerita. Temukan aroma yang mencerminkan dirimu sekarang.
           </p>
           <Link
-            to="/collection"
-            className="group inline-flex items-center gap-2.5 mt-10 px-10 py-4.5 bg-gradient-to-r from-gold to-warm-brown text-white rounded-full text-sm font-semibold tracking-wide hover:shadow-2xl hover:shadow-gold/30 hover:scale-[1.03] transition-all duration-300"
+            to="/find-your-soul"
+            className="group inline-flex items-center gap-3 mt-10 px-10 py-4.5 bg-accent text-primary text-sm font-semibold tracking-wider uppercase hover:bg-accent-light hover:shadow-xl hover:shadow-accent/20 transition-all duration-300"
           >
-            Tambah Parfum Pertama
+            Temukan Parfum Pertama
             <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-300" />
           </Link>
         </div>

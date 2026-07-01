@@ -1,13 +1,16 @@
 import { useState, useEffect } from 'react'
 import { Link, useLocation } from 'react-router-dom'
-import { Menu, X, Droplets } from 'lucide-react'
+import { Menu, X } from 'lucide-react'
 
 const navLinks = [
   { path: '/', label: 'Home' },
-  { path: '/collection', label: 'Koleksi' },
-  { path: '/moments', label: 'Momen' },
+  { path: '/scent-of-the-soul', label: 'Scent of The Soul' },
+  { path: '/find-your-soul', label: 'Find Your Soul' },
+  { path: '/collection', label: 'Collection' },
+  { path: '/moments', label: 'Moments' },
   { path: '/journal', label: 'Journal' },
   { path: '/timeline', label: 'Timeline' },
+  { path: '/uchiMate', label: 'UchiMate' },
 ]
 
 export default function Navbar() {
@@ -23,7 +26,6 @@ export default function Navbar() {
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
-  // Close mobile menu on route change
   useEffect(() => {
     setIsOpen(false)
   }, [location.pathname])
@@ -32,57 +34,59 @@ export default function Navbar() {
     <nav
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
         scrolled
-          ? 'bg-cream/95 backdrop-blur-xl shadow-lg shadow-charcoal/5 border-b border-gold/15'
-          : 'bg-cream/60 backdrop-blur-md border-b border-gold-light/10'
+          ? 'bg-primary/95 backdrop-blur-xl border-b border-border'
+          : 'bg-transparent'
       }`}
     >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-18 md:h-22">
+      <div className="max-w-7xl mx-auto px-6 lg:px-8">
+        <div className="flex items-center justify-between h-20 md:h-24">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-3 group">
-            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-gold to-warm-brown flex items-center justify-center shadow-md shadow-gold/20 group-hover:shadow-lg group-hover:shadow-gold/30 group-hover:scale-105 transition-all duration-300">
-              <Droplets className="w-[1.125rem] h-[1.125rem] text-white" />
-            </div>
-            <div className="flex flex-col">
-              <span className="font-serif text-xl md:text-2xl font-semibold text-deep-brown tracking-wide leading-tight">
-                My Uchi
-              </span>
-              <span className="text-[10px] text-muted/60 tracking-widest uppercase hidden sm:block">
-                Parfume Experience
-              </span>
-            </div>
+            <span className="font-serif text-2xl md:text-3xl font-medium text-gradient tracking-wide">
+              UCHI
+            </span>
           </Link>
 
           {/* Desktop Nav */}
-          <div className="hidden md:flex items-center gap-1 bg-white/50 backdrop-blur-sm rounded-full px-2 py-1.5 border border-gold-light/20 shadow-sm">
+          <div className="hidden md:flex items-center gap-1">
             {navLinks.map((link) => (
               <Link
                 key={link.path}
                 to={link.path}
-                className={`relative px-5 py-2 text-sm font-medium tracking-wide rounded-full transition-all duration-300
+                className={`relative px-5 py-2.5 text-sm font-medium tracking-wider uppercase transition-all duration-300
                   ${location.pathname === link.path
-                    ? 'text-white bg-gradient-to-r from-gold to-warm-brown shadow-md shadow-gold/25'
-                    : 'text-muted hover:text-deep-brown hover:bg-white/80'
+                    ? 'text-accent'
+                    : 'text-text-secondary hover:text-text-primary'
                   }
                 `}
               >
                 {link.label}
+                {location.pathname === link.path && (
+                  <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-accent" />
+                )}
               </Link>
             ))}
+          </div>
+
+          {/* CTA */}
+          <div className="hidden md:block">
+            <a
+              href="https://uchiparfume.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="px-6 py-2.5 border border-accent/40 text-accent text-xs font-medium tracking-widest uppercase rounded-none hover:bg-accent hover:text-primary transition-all duration-300"
+            >
+              Shop Now
+            </a>
           </div>
 
           {/* Mobile Menu Button */}
           <button
             onClick={() => setIsOpen(!isOpen)}
-            className="md:hidden relative w-10 h-10 flex items-center justify-center rounded-xl bg-white/60 border border-gold-light/20 hover:bg-white/80 transition-colors"
+            className="md:hidden relative w-10 h-10 flex items-center justify-center text-text-primary"
             aria-label="Toggle menu"
           >
-            <span className={`transition-all duration-300 ${isOpen ? 'rotate-90 scale-0' : 'rotate-0 scale-100'}`}>
-              <Menu className="w-5 h-5 text-deep-brown absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" />
-            </span>
-            <span className={`transition-all duration-300 ${isOpen ? 'rotate-0 scale-100' : '-rotate-90 scale-0'}`}>
-              <X className="w-5 h-5 text-deep-brown absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" />
-            </span>
+            {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
           </button>
         </div>
       </div>
@@ -90,25 +94,35 @@ export default function Navbar() {
       {/* Mobile Menu */}
       <div
         className={`md:hidden transition-all duration-400 ease-in-out overflow-hidden ${
-          isOpen ? 'max-h-[400px] opacity-100' : 'max-h-0 opacity-0'
+          isOpen ? 'max-h-[500px] opacity-100' : 'max-h-0 opacity-0'
         }`}
       >
-        <div className="px-4 pb-6 pt-3 bg-cream/98 backdrop-blur-xl border-t border-gold-light/10">
-          <div className="space-y-1.5 mt-2">
+        <div className="px-6 pb-8 pt-4 bg-primary/98 backdrop-blur-xl border-t border-border">
+          <div className="space-y-1">
             {navLinks.map((link) => (
               <Link
                 key={link.path}
                 to={link.path}
-                className={`block px-5 py-3.5 rounded-xl text-sm font-medium tracking-wide transition-all duration-200
+                className={`block px-4 py-3.5 text-sm font-medium tracking-wider uppercase transition-all duration-200
                   ${location.pathname === link.path
-                    ? 'text-white bg-gradient-to-r from-gold to-warm-brown shadow-md'
-                    : 'text-muted hover:text-deep-brown hover:bg-white/60'
+                    ? 'text-accent border-l-2 border-accent pl-4'
+                    : 'text-text-secondary hover:text-text-primary'
                   }
                 `}
               >
                 {link.label}
               </Link>
             ))}
+          </div>
+          <div className="mt-6 pt-6 border-t border-border">
+            <a
+              href="https://uchiparfume.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="block w-full text-center px-6 py-3 border border-accent/40 text-accent text-xs font-medium tracking-widest uppercase hover:bg-accent hover:text-primary transition-all duration-300"
+            >
+              Shop Now
+            </a>
           </div>
         </div>
       </div>

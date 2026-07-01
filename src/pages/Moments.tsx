@@ -51,28 +51,28 @@ export default function Moments() {
   }, [filteredMoments.length, selectedMood])
 
   return (
-    <div className="min-h-screen pt-24 md:pt-28 pb-20 px-4 sm:px-6">
+    <div className="min-h-screen pt-28 md:pt-32 pb-20 px-6">
       <div className="max-w-6xl mx-auto">
         {/* Header */}
-        <div className="page-header text-center mb-10 md:mb-14">
-          <span className="text-xs font-medium text-rose tracking-widest uppercase">Galeri</span>
-          <h1 className="font-serif text-4xl sm:text-5xl md:text-6xl text-deep-brown font-light mt-3">
-            Momen <span className="italic text-rose">Berharga</span>
+        <div className="page-header text-center mb-12 md:mb-16">
+          <span className="text-xs font-medium tracking-[0.3em] uppercase text-accent">Gallery</span>
+          <h1 className="font-serif text-4xl sm:text-5xl md:text-6xl text-text-primary font-medium mt-4">
+            Momen <span className="italic text-gradient">Berharga</span>
           </h1>
-          <p className="mt-4 text-muted max-w-md mx-auto text-sm md:text-base">
+          <p className="mt-4 text-text-secondary max-w-md mx-auto text-sm md:text-base">
             Abadikan kenangan-kenangan indah yang telah kamu lalui bersama wangi favoritmu.
           </p>
         </div>
 
         {/* Mood Filter & Add */}
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mb-8">
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mb-10">
           <div className="flex items-center gap-2 flex-wrap justify-center">
             <button
               onClick={() => setSelectedMood('all')}
-              className={`px-4 py-2 rounded-full text-xs font-medium transition-all duration-300 ${
+              className={`px-4 py-2 text-xs font-medium tracking-wider uppercase transition-all duration-300 ${
                 selectedMood === 'all'
-                  ? 'bg-charcoal text-cream shadow-md'
-                  : 'bg-white/60 text-muted hover:bg-white hover:shadow-sm border border-gold-light/20'
+                  ? 'bg-accent text-primary'
+                  : 'bg-surface-card border border-border text-text-secondary hover:border-accent/30 hover:text-accent'
               }`}
             >
               Semua
@@ -81,10 +81,10 @@ export default function Moments() {
               <button
                 key={mood}
                 onClick={() => setSelectedMood(mood)}
-                className={`px-4 py-2 rounded-full text-xs font-medium transition-all duration-300 flex items-center gap-1.5 ${
+                className={`px-4 py-2 text-xs font-medium tracking-wider transition-all duration-300 flex items-center gap-1.5 ${
                   selectedMood === mood
-                    ? 'bg-charcoal text-cream shadow-md'
-                    : 'bg-white/60 text-muted hover:bg-white hover:shadow-sm border border-gold-light/20'
+                    ? 'bg-accent text-primary'
+                    : 'bg-surface-card border border-border text-text-secondary hover:border-accent/30 hover:text-accent'
                 }`}
               >
                 <span>{moodEmoji[mood]}</span>
@@ -95,7 +95,7 @@ export default function Moments() {
 
           <button
             onClick={() => setShowForm(true)}
-            className="flex items-center gap-2 px-6 py-3 bg-rose text-white rounded-full text-sm font-medium hover:bg-rose/80 transition-all duration-300 hover:shadow-lg hover:shadow-rose/20 hover:scale-[1.02] flex-shrink-0"
+            className="flex items-center gap-2 px-6 py-3.5 bg-accent text-primary text-sm font-semibold tracking-wider uppercase hover:bg-accent-light transition-all duration-300 flex-shrink-0"
           >
             <Plus className="w-4 h-4" />
             Tambah Momen
@@ -105,15 +105,15 @@ export default function Moments() {
         {/* Masonry Grid */}
         <div ref={gridRef} className="columns-1 sm:columns-2 lg:columns-3 gap-5 space-y-5">
           {filteredMoments.length === 0 ? (
-            <div className="col-span-full text-center py-24 break-inside-avoid">
-              <div className="w-20 h-20 mx-auto rounded-full bg-rose/10 flex items-center justify-center mb-5">
-                <Heart className="w-9 h-9 text-rose/50" />
+            <div className="col-span-full text-center py-28 break-inside-avoid">
+              <div className="w-20 h-20 mx-auto border border-accent/20 flex items-center justify-center mb-6">
+                <Heart className="w-9 h-9 text-accent/40" />
               </div>
-              <p className="text-muted font-serif text-xl">Belum ada momen yang diabadikan</p>
-              <p className="text-sm text-muted/60 mt-2 mb-6">Mulai abadikan momen-momen indahmu</p>
+              <p className="text-text-secondary font-serif text-xl">Belum ada momen yang diabadikan</p>
+              <p className="text-sm text-text-muted mt-2 mb-8">Mulai abadikan momen-momen indahmu</p>
               <button
                 onClick={() => setShowForm(true)}
-                className="inline-flex items-center gap-2 px-6 py-3 bg-rose text-white rounded-full text-sm font-medium hover:bg-rose/80 transition-colors"
+                className="inline-flex items-center gap-2 px-6 py-3.5 bg-accent text-primary text-sm font-semibold tracking-wider uppercase hover:bg-accent-light transition-colors"
               >
                 <Plus className="w-4 h-4" />
                 Abadikan Momen Pertama
@@ -154,47 +154,49 @@ function MomentCard({
   onDelete: (id: string) => void
 }) {
   return (
-    <div className="moment-card break-inside-avoid group relative rounded-2xl bg-white/80 backdrop-blur-sm border border-gold-light/20 overflow-hidden hover:border-rose/20 hover:shadow-xl hover:shadow-rose/5 transition-all duration-500">
+    <div className="moment-card break-inside-avoid group relative bg-surface-card border border-border overflow-hidden hover:border-accent/20 hover-glow transition-all duration-500">
       {/* Images */}
       {moment.images.length > 0 && (
-        <div className="relative aspect-[4/3] overflow-hidden bg-cream-dark">
+        <div className="relative aspect-[4/3] overflow-hidden bg-surface-elevated">
           <img
             src={moment.images[0]}
             alt={moment.title}
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-charcoal/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
           {moment.images.length > 1 && (
-            <div className="absolute bottom-3 right-3 px-2.5 py-1 bg-charcoal/70 backdrop-blur-sm rounded-full text-[11px] text-cream font-medium">
+            <div className="absolute bottom-3 right-3 px-2.5 py-1 bg-black/70 backdrop-blur-sm text-[11px] text-text-primary font-medium">
               +{moment.images.length - 1} foto
             </div>
           )}
         </div>
       )}
 
-      <div className="p-5">
+      <div className="p-6">
         {/* Mood Badge */}
-        <div className="flex items-center justify-between mb-3">
+        <div className="flex items-center justify-between mb-4">
           <span
-            className="px-3 py-1 rounded-full text-[11px] font-medium text-white flex items-center gap-1.5"
+            className="px-3 py-1 text-[11px] font-medium text-white flex items-center gap-1.5"
             style={{ backgroundColor: moodColors[moment.mood] }}
           >
             {moodEmoji[moment.mood]} {moodLabels[moment.mood]}
           </span>
           <button
             onClick={() => onDelete(moment.id)}
-            className="opacity-0 group-hover:opacity-100 p-2 rounded-full hover:bg-rose/10 text-rose transition-all duration-200"
+            className="opacity-0 group-hover:opacity-100 p-2 border border-border hover:border-rose/40 text-text-muted hover:text-rose transition-all duration-200"
             aria-label="Hapus momen"
           >
             <X className="w-3.5 h-3.5" />
           </button>
         </div>
 
-        <h3 className="font-serif text-lg text-deep-brown leading-tight">{moment.title}</h3>
-        <p className="text-sm text-muted mt-2 leading-relaxed line-clamp-3">{moment.description}</p>
+        <h3 className="font-serif text-lg text-text-primary leading-tight group-hover:text-accent transition-colors duration-300">
+          {moment.title}
+        </h3>
+        <p className="text-sm text-text-secondary mt-2 leading-relaxed line-clamp-3">{moment.description}</p>
 
         {/* Meta */}
-        <div className="mt-4 flex flex-wrap items-center gap-3 text-[11px] text-muted/60">
+        <div className="mt-4 flex flex-wrap items-center gap-3 text-[11px] text-text-muted">
           <span className="flex items-center gap-1">
             <Calendar className="w-3 h-3" />
             {new Date(moment.date).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })}
@@ -209,8 +211,8 @@ function MomentCard({
 
         {/* Perfume tag */}
         {perfumeName && (
-          <div className="mt-3 inline-flex items-center gap-1.5 px-3 py-1 bg-gold/8 border border-gold/15 rounded-full text-[11px] text-gold font-medium">
-            <span className="w-1.5 h-1.5 rounded-full bg-gold" />
+          <div className="mt-4 inline-flex items-center gap-1.5 px-3 py-1 border border-accent/20 text-[11px] text-accent font-medium tracking-wider">
+            <span className="w-1.5 h-1.5 rounded-full bg-accent" />
             {perfumeName}
           </div>
         )}
@@ -254,40 +256,40 @@ function AddMomentModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-      <div className="absolute inset-0 bg-charcoal/60 backdrop-blur-md" onClick={onClose} />
-      <div className="relative w-full max-w-lg max-h-[90vh] overflow-y-auto bg-cream rounded-3xl shadow-2xl p-6 sm:p-8 animate-fade-in">
+      <div className="absolute inset-0 bg-black/80 backdrop-blur-md" onClick={onClose} />
+      <div className="relative w-full max-w-lg max-h-[90vh] overflow-y-auto bg-surface-card border border-border shadow-2xl p-6 sm:p-8 animate-fade-up">
         <button
           onClick={onClose}
-          className="absolute top-5 right-5 p-2 rounded-full hover:bg-charcoal/5 transition-colors"
+          className="absolute top-5 right-5 p-2 hover:bg-surface-elevated transition-colors"
           aria-label="Tutup"
         >
-          <X className="w-5 h-5 text-muted" />
+          <X className="w-5 h-5 text-text-muted" />
         </button>
 
-        <div className="mb-6">
-          <span className="text-xs font-medium text-rose tracking-widest uppercase">Abadikan</span>
-          <h2 className="font-serif text-2xl text-deep-brown mt-1">Momen Baru</h2>
+        <div className="mb-8">
+          <span className="text-xs font-medium tracking-[0.3em] uppercase text-accent">Capture</span>
+          <h2 className="font-serif text-2xl text-text-primary mt-2">Momen Baru</h2>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-5">
           <div>
-            <label className="block text-xs font-medium text-muted mb-2">Judul Momen *</label>
+            <label className="block text-xs font-medium text-text-muted mb-2 tracking-wider uppercase">Judul Momen *</label>
             <input
               type="text"
               required
               value={form.title}
               onChange={(e) => setForm({ ...form, title: e.target.value })}
               placeholder="e.g. Dinner pertama bersama dia"
-              className="w-full px-4 py-3.5 bg-white/70 border border-gold-light/30 rounded-xl text-sm focus:outline-none focus:border-gold/50 focus:bg-white transition-all duration-200"
+              className="w-full px-4 py-3.5 bg-surface-elevated border border-border text-text-primary text-sm placeholder:text-text-muted focus:outline-none focus:border-accent/50 transition-all duration-200"
             />
           </div>
 
           <div>
-            <label className="block text-xs font-medium text-muted mb-2">Parfum yang Dipakai</label>
+            <label className="block text-xs font-medium text-text-muted mb-2 tracking-wider uppercase">Parfum yang Dipakai</label>
             <select
               value={form.perfumeId}
               onChange={(e) => setForm({ ...form, perfumeId: e.target.value })}
-              className="w-full px-4 py-3.5 bg-white/70 border border-gold-light/30 rounded-xl text-sm focus:outline-none focus:border-gold/50 focus:bg-white transition-all duration-200"
+              className="w-full px-4 py-3.5 bg-surface-elevated border border-border text-text-primary text-sm focus:outline-none focus:border-accent/50 transition-all duration-200"
             >
               <option value="">— Pilih parfum —</option>
               {perfumes.map((p) => (
@@ -297,52 +299,52 @@ function AddMomentModal({
           </div>
 
           <div>
-            <label className="block text-xs font-medium text-muted mb-2">Ceritakan Momennya *</label>
+            <label className="block text-xs font-medium text-text-muted mb-2 tracking-wider uppercase">Ceritakan Momennya *</label>
             <textarea
               required
               value={form.description}
               onChange={(e) => setForm({ ...form, description: e.target.value })}
               rows={3}
               placeholder="Apa yang terjadi? Bagaimana perasaanmu?"
-              className="w-full px-4 py-3.5 bg-white/70 border border-gold-light/30 rounded-xl text-sm focus:outline-none focus:border-gold/50 focus:bg-white transition-all duration-200 resize-none"
+              className="w-full px-4 py-3.5 bg-surface-elevated border border-border text-text-primary text-sm placeholder:text-text-muted focus:outline-none focus:border-accent/50 transition-all duration-200 resize-none"
             />
           </div>
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-medium text-muted mb-2">Tanggal</label>
+              <label className="block text-xs font-medium text-text-muted mb-2 tracking-wider uppercase">Tanggal</label>
               <input
                 type="date"
                 value={form.date}
                 onChange={(e) => setForm({ ...form, date: e.target.value })}
-                className="w-full px-4 py-3.5 bg-white/70 border border-gold-light/30 rounded-xl text-sm focus:outline-none focus:border-gold/50 focus:bg-white transition-all duration-200"
+                className="w-full px-4 py-3.5 bg-surface-elevated border border-border text-text-primary text-sm focus:outline-none focus:border-accent/50 transition-all duration-200"
               />
             </div>
             <div>
-              <label className="block text-xs font-medium text-muted mb-2">Lokasi</label>
+              <label className="block text-xs font-medium text-text-muted mb-2 tracking-wider uppercase">Lokasi</label>
               <input
                 type="text"
                 value={form.location}
                 onChange={(e) => setForm({ ...form, location: e.target.value })}
                 placeholder="Bandung"
-                className="w-full px-4 py-3.5 bg-white/70 border border-gold-light/30 rounded-xl text-sm focus:outline-none focus:border-gold/50 focus:bg-white transition-all duration-200"
+                className="w-full px-4 py-3.5 bg-surface-elevated border border-border text-text-primary text-sm placeholder:text-text-muted focus:outline-none focus:border-accent/50 transition-all duration-200"
               />
             </div>
           </div>
 
           {/* Mood Selection */}
           <div>
-            <label className="block text-xs font-medium text-muted mb-2">Mood</label>
+            <label className="block text-xs font-medium text-text-muted mb-2 tracking-wider uppercase">Mood</label>
             <div className="grid grid-cols-3 gap-2">
               {moods.map((mood) => (
                 <button
                   key={mood}
                   type="button"
                   onClick={() => setForm({ ...form, mood })}
-                  className={`px-3 py-2.5 rounded-xl text-xs font-medium transition-all duration-200 flex items-center gap-1.5 justify-center ${
+                  className={`px-3 py-2.5 text-xs font-medium transition-all duration-200 flex items-center gap-1.5 justify-center ${
                     form.mood === mood
-                      ? 'ring-2 ring-rose bg-rose/10 text-deep-brown scale-[1.02]'
-                      : 'bg-white/60 text-muted hover:bg-white border border-gold-light/20'
+                      ? 'border-2 border-accent bg-accent/10 text-accent'
+                      : 'bg-surface-elevated border border-border text-text-secondary hover:border-accent/30'
                   }`}
                 >
                   <span>{moodEmoji[mood]}</span>
@@ -354,7 +356,7 @@ function AddMomentModal({
 
           {/* Image URL */}
           <div>
-            <label className="block text-xs font-medium text-muted mb-2">
+            <label className="block text-xs font-medium text-text-muted mb-2 tracking-wider uppercase">
               <span className="flex items-center gap-1.5">
                 <Image className="w-3.5 h-3.5" />
                 URL Foto (opsional)
@@ -365,13 +367,13 @@ function AddMomentModal({
               value={form.imageUrl}
               onChange={(e) => setForm({ ...form, imageUrl: e.target.value })}
               placeholder="https://example.com/foto.jpg"
-              className="w-full px-4 py-3.5 bg-white/70 border border-gold-light/30 rounded-xl text-sm focus:outline-none focus:border-gold/50 focus:bg-white transition-all duration-200"
+              className="w-full px-4 py-3.5 bg-surface-elevated border border-border text-text-primary text-sm placeholder:text-text-muted focus:outline-none focus:border-accent/50 transition-all duration-200"
             />
           </div>
 
           <button
             type="submit"
-            className="w-full py-4 bg-rose text-cream rounded-xl text-sm font-medium hover:bg-rose/80 transition-all duration-300 hover:shadow-lg mt-2"
+            className="w-full py-4 bg-accent text-primary text-sm font-semibold tracking-wider uppercase hover:bg-accent-light transition-all duration-300 mt-2"
           >
             Simpan Momen
           </button>

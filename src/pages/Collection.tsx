@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
-import { Plus, Star, X, Droplets, Search, Filter } from 'lucide-react'
+import { Plus, Star, X, Search, Filter, Droplets } from 'lucide-react'
 import { usePerfumeStore } from '../store/useStore'
 import type { Perfume } from '../types'
 import { categoryLabels } from '../types'
@@ -24,7 +24,6 @@ export default function Collection() {
   const [showForm, setShowForm] = useState(false)
   const [filter, setFilter] = useState<Perfume['category'] | 'all'>('all')
   const [search, setSearch] = useState('')
-  const headerRef = useRef<HTMLDivElement>(null)
   const gridRef = useRef<HTMLDivElement>(null)
 
   const filteredPerfumes = perfumes.filter((p) => {
@@ -59,38 +58,38 @@ export default function Collection() {
   }, [filteredPerfumes.length, filter, search])
 
   return (
-    <div className="min-h-screen pt-24 md:pt-28 pb-20 px-4 sm:px-6">
+    <div className="min-h-screen pt-28 md:pt-32 pb-20 px-6">
       <div className="max-w-6xl mx-auto">
         {/* Header */}
-        <div ref={headerRef} className="page-header text-center mb-10 md:mb-14">
-          <span className="text-xs font-medium text-gold tracking-widest uppercase">Koleksi</span>
-          <h1 className="font-serif text-4xl sm:text-5xl md:text-6xl text-deep-brown font-light mt-3">
-            Wangi <span className="italic text-gold">Favoritmu</span>
+        <div className="page-header text-center mb-12 md:mb-16">
+          <span className="text-xs font-medium tracking-[0.3em] uppercase text-accent">Collection</span>
+          <h1 className="font-serif text-4xl sm:text-5xl md:text-6xl text-text-primary font-medium mt-4">
+            Wangi <span className="italic text-gradient">Favoritmu</span>
           </h1>
-          <p className="mt-4 text-muted max-w-md mx-auto text-sm md:text-base">
+          <p className="mt-4 text-text-secondary max-w-md mx-auto text-sm md:text-base">
             Setiap parfum memiliki cerita. Tambahkan koleksi Uchi Parfume yang telah menemanimu.
           </p>
         </div>
 
         {/* Controls */}
-        <div className="controls-bar space-y-4 mb-8">
+        <div className="controls-bar space-y-5 mb-10">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
             {/* Search */}
             <div className="relative w-full sm:w-80">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted/50" />
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted" />
               <input
                 type="text"
                 placeholder="Cari parfum..."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                className="w-full pl-11 pr-4 py-3 bg-white/70 backdrop-blur-sm border border-gold-light/30 rounded-full text-sm text-deep-brown placeholder:text-muted/40 focus:outline-none focus:border-gold/50 focus:bg-white focus:shadow-md focus:shadow-gold/5 transition-all duration-300"
+                className="w-full pl-11 pr-4 py-3.5 bg-surface-card border border-border text-text-primary text-sm placeholder:text-text-muted focus:outline-none focus:border-accent/50 transition-all duration-300"
               />
             </div>
 
             {/* Add Button */}
             <button
               onClick={() => setShowForm(true)}
-              className="flex items-center gap-2 px-6 py-3 bg-charcoal text-cream rounded-full text-sm font-medium hover:bg-deep-brown transition-all duration-300 hover:shadow-lg hover:shadow-charcoal/20 hover:scale-[1.02] flex-shrink-0"
+              className="flex items-center gap-2 px-6 py-3.5 bg-accent text-primary text-sm font-semibold tracking-wider uppercase hover:bg-accent-light transition-all duration-300 flex-shrink-0"
             >
               <Plus className="w-4 h-4" />
               Tambah Parfum
@@ -99,13 +98,13 @@ export default function Collection() {
 
           {/* Filter pills */}
           <div className="flex items-center gap-2 flex-wrap justify-center sm:justify-start">
-            <Filter className="w-4 h-4 text-muted/50 mr-1" />
+            <Filter className="w-4 h-4 text-text-muted mr-1" />
             <button
               onClick={() => setFilter('all')}
-              className={`px-4 py-2 rounded-full text-xs font-medium transition-all duration-300 ${
+              className={`px-4 py-2 text-xs font-medium tracking-wider uppercase transition-all duration-300 ${
                 filter === 'all'
-                  ? 'bg-charcoal text-cream shadow-md'
-                  : 'bg-white/60 text-muted hover:bg-white hover:shadow-sm border border-gold-light/20'
+                  ? 'bg-accent text-primary'
+                  : 'bg-surface-card border border-border text-text-secondary hover:border-accent/30 hover:text-accent'
               }`}
             >
               Semua
@@ -114,10 +113,10 @@ export default function Collection() {
               <button
                 key={cat}
                 onClick={() => setFilter(cat)}
-                className={`px-4 py-2 rounded-full text-xs font-medium transition-all duration-300 flex items-center gap-1.5 ${
+                className={`px-4 py-2 text-xs font-medium tracking-wider transition-all duration-300 flex items-center gap-1.5 ${
                   filter === cat
-                    ? 'bg-charcoal text-cream shadow-md'
-                    : 'bg-white/60 text-muted hover:bg-white hover:shadow-sm border border-gold-light/20'
+                    ? 'bg-accent text-primary'
+                    : 'bg-surface-card border border-border text-text-secondary hover:border-accent/30 hover:text-accent'
                 }`}
               >
                 <span>{categoryEmoji[cat]}</span>
@@ -128,17 +127,17 @@ export default function Collection() {
         </div>
 
         {/* Grid */}
-        <div ref={gridRef} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-6">
+        <div ref={gridRef} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-px bg-border">
           {filteredPerfumes.length === 0 ? (
-            <div className="col-span-full text-center py-24">
-              <div className="w-20 h-20 mx-auto rounded-full bg-gold/10 flex items-center justify-center mb-5">
-                <Droplets className="w-9 h-9 text-gold/50" />
+            <div className="col-span-full bg-primary text-center py-28">
+              <div className="w-20 h-20 mx-auto border border-accent/20 flex items-center justify-center mb-6">
+                <Droplets className="w-9 h-9 text-accent/40" />
               </div>
-              <p className="text-muted font-serif text-xl">Belum ada parfum dalam koleksimu</p>
-              <p className="text-sm text-muted/60 mt-2 mb-6">Mulai tambahkan koleksi Uchi favoritmu</p>
+              <p className="text-text-secondary font-serif text-xl">Belum ada parfum dalam koleksimu</p>
+              <p className="text-sm text-text-muted mt-2 mb-8">Mulai tambahkan koleksi Uchi favoritmu</p>
               <button
                 onClick={() => setShowForm(true)}
-                className="inline-flex items-center gap-2 px-6 py-3 bg-gold text-white rounded-full text-sm font-medium hover:bg-warm-brown transition-colors"
+                className="inline-flex items-center gap-2 px-6 py-3.5 bg-accent text-primary text-sm font-semibold tracking-wider uppercase hover:bg-accent-light transition-colors"
               >
                 <Plus className="w-4 h-4" />
                 Tambah Parfum Pertama
@@ -162,59 +161,56 @@ export default function Collection() {
 
 function PerfumeCard({ perfume, onDelete }: { perfume: Perfume; onDelete: (id: string) => void }) {
   return (
-    <div className="perfume-card group relative p-6 rounded-2xl bg-white/80 backdrop-blur-sm border border-gold-light/20 hover:border-gold/30 hover:shadow-xl hover:shadow-gold/10 transition-all duration-500 hover:-translate-y-1">
+    <div className="perfume-card group relative p-8 bg-primary hover:bg-surface-card transition-all duration-500">
       {/* Delete */}
       <button
         onClick={() => onDelete(perfume.id)}
-        className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 p-2 rounded-full bg-rose/10 text-rose hover:bg-rose/20 transition-all duration-200"
+        className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 p-2 border border-border hover:border-rose/40 text-text-muted hover:text-rose transition-all duration-200"
         aria-label="Hapus parfum"
       >
         <X className="w-3.5 h-3.5" />
       </button>
 
       {/* Perfume visual */}
-      <div className="w-16 h-16 mx-auto mb-5 rounded-2xl bg-gradient-to-br from-gold/15 to-rose/10 border border-gold-light/20 flex items-center justify-center shadow-inner">
+      <div className="w-16 h-16 mx-auto mb-6 border border-accent/20 flex items-center justify-center group-hover:border-accent/40 transition-all duration-300">
         <span className="text-2xl">{categoryEmoji[perfume.category]}</span>
       </div>
 
-      <h3 className="font-serif text-xl text-deep-brown text-center leading-tight">{perfume.name}</h3>
-      <p className="text-xs text-muted text-center mt-1.5">{perfume.brand}</p>
+      <h3 className="font-serif text-xl text-text-primary text-center leading-tight group-hover:text-accent transition-colors duration-300">
+        {perfume.name}
+      </h3>
+      <p className="text-xs text-text-muted text-center mt-2 tracking-wider uppercase">{perfume.brand}</p>
 
       {/* Category Badge */}
-      <div className="flex justify-center mt-3">
-        <span className="px-3 py-1 bg-gold/8 border border-gold/15 text-gold text-[11px] font-medium rounded-full">
+      <div className="flex justify-center mt-4">
+        <span className="px-3 py-1 border border-accent/20 text-accent text-[11px] font-medium tracking-wider uppercase">
           {categoryLabels[perfume.category]}
         </span>
       </div>
 
       {/* Rating */}
-      <div className="flex items-center justify-center gap-1 mt-4">
+      <div className="flex items-center justify-center gap-1 mt-5">
         {[1, 2, 3, 4, 5].map((star) => (
           <Star
             key={star}
-            className={`w-4 h-4 transition-colors ${star <= perfume.rating ? 'text-gold fill-gold' : 'text-gold-light/30'}`}
+            className={`w-4 h-4 transition-colors ${star <= perfume.rating ? 'text-accent fill-accent' : 'text-border'}`}
           />
         ))}
       </div>
 
       {/* Notes preview */}
       {perfume.notes.top.length > 0 && (
-        <div className="mt-4 flex flex-wrap gap-1.5 justify-center">
+        <div className="mt-5 flex flex-wrap gap-1.5 justify-center">
           {perfume.notes.top.slice(0, 3).map((note) => (
-            <span key={note} className="px-2.5 py-0.5 bg-cream-dark/60 text-[11px] text-muted rounded-full">
+            <span key={note} className="px-2.5 py-0.5 bg-surface-elevated text-[11px] text-text-muted border border-border-light">
               {note}
             </span>
           ))}
-          {perfume.notes.top.length > 3 && (
-            <span className="px-2 py-0.5 text-[11px] text-muted/50">
-              +{perfume.notes.top.length - 3}
-            </span>
-          )}
         </div>
       )}
 
       {/* Date */}
-      <p className="mt-5 text-[11px] text-muted/50 text-center border-t border-gold-light/10 pt-4">
+      <p className="mt-6 text-[11px] text-text-muted text-center border-t border-border pt-5">
         Dibeli {new Date(perfume.purchaseDate).toLocaleDateString('id-ID', { month: 'long', year: 'numeric' })}
       </p>
     </div>
@@ -254,50 +250,50 @@ function AddPerfumeModal({ onClose, onAdd }: { onClose: () => void; onAdd: (p: O
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-      <div className="absolute inset-0 bg-charcoal/60 backdrop-blur-md" onClick={onClose} />
-      <div className="relative w-full max-w-lg max-h-[90vh] overflow-y-auto bg-cream rounded-3xl shadow-2xl p-6 sm:p-8 animate-fade-in">
+      <div className="absolute inset-0 bg-black/80 backdrop-blur-md" onClick={onClose} />
+      <div className="relative w-full max-w-lg max-h-[90vh] overflow-y-auto bg-surface-card border border-border shadow-2xl p-6 sm:p-8 animate-fade-up">
         <button
           onClick={onClose}
-          className="absolute top-5 right-5 p-2 rounded-full hover:bg-charcoal/5 transition-colors"
+          className="absolute top-5 right-5 p-2 hover:bg-surface-elevated transition-colors"
           aria-label="Tutup"
         >
-          <X className="w-5 h-5 text-muted" />
+          <X className="w-5 h-5 text-text-muted" />
         </button>
 
-        <div className="mb-6">
-          <span className="text-xs font-medium text-gold tracking-widest uppercase">Tambah</span>
-          <h2 className="font-serif text-2xl text-deep-brown mt-1">Parfum Baru</h2>
+        <div className="mb-8">
+          <span className="text-xs font-medium tracking-[0.3em] uppercase text-accent">Add New</span>
+          <h2 className="font-serif text-2xl text-text-primary mt-2">Parfum Baru</h2>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-5">
           <div>
-            <label className="block text-xs font-medium text-muted mb-2">Nama Parfum *</label>
+            <label className="block text-xs font-medium text-text-muted mb-2 tracking-wider uppercase">Nama Parfum *</label>
             <input
               type="text"
               required
               value={form.name}
               onChange={(e) => setForm({ ...form, name: e.target.value })}
               placeholder="e.g. Midnight Blossom"
-              className="w-full px-4 py-3.5 bg-white/70 border border-gold-light/30 rounded-xl text-sm focus:outline-none focus:border-gold/50 focus:bg-white focus:shadow-sm transition-all duration-200"
+              className="w-full px-4 py-3.5 bg-surface-elevated border border-border text-text-primary text-sm placeholder:text-text-muted focus:outline-none focus:border-accent/50 transition-all duration-200"
             />
           </div>
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-medium text-muted mb-2">Brand</label>
+              <label className="block text-xs font-medium text-text-muted mb-2 tracking-wider uppercase">Brand</label>
               <input
                 type="text"
                 value={form.brand}
                 onChange={(e) => setForm({ ...form, brand: e.target.value })}
-                className="w-full px-4 py-3.5 bg-white/70 border border-gold-light/30 rounded-xl text-sm focus:outline-none focus:border-gold/50 focus:bg-white transition-all duration-200"
+                className="w-full px-4 py-3.5 bg-surface-elevated border border-border text-text-primary text-sm focus:outline-none focus:border-accent/50 transition-all duration-200"
               />
             </div>
             <div>
-              <label className="block text-xs font-medium text-muted mb-2">Kategori</label>
+              <label className="block text-xs font-medium text-text-muted mb-2 tracking-wider uppercase">Kategori</label>
               <select
                 value={form.category}
                 onChange={(e) => setForm({ ...form, category: e.target.value as Perfume['category'] })}
-                className="w-full px-4 py-3.5 bg-white/70 border border-gold-light/30 rounded-xl text-sm focus:outline-none focus:border-gold/50 focus:bg-white transition-all duration-200"
+                className="w-full px-4 py-3.5 bg-surface-elevated border border-border text-text-primary text-sm focus:outline-none focus:border-accent/50 transition-all duration-200"
               >
                 {categories.map((cat) => (
                   <option key={cat} value={cat}>{categoryEmoji[cat]} {categoryLabels[cat]}</option>
@@ -307,41 +303,41 @@ function AddPerfumeModal({ onClose, onAdd }: { onClose: () => void; onAdd: (p: O
           </div>
 
           <div>
-            <label className="block text-xs font-medium text-muted mb-2">Top Notes <span className="text-muted/40">(pisahkan koma)</span></label>
+            <label className="block text-xs font-medium text-text-muted mb-2 tracking-wider uppercase">Top Notes <span className="text-text-muted/40">(pisahkan koma)</span></label>
             <input
               type="text"
               value={form.topNotes}
               onChange={(e) => setForm({ ...form, topNotes: e.target.value })}
               placeholder="Bergamot, Lemon, Pink Pepper"
-              className="w-full px-4 py-3.5 bg-white/70 border border-gold-light/30 rounded-xl text-sm focus:outline-none focus:border-gold/50 focus:bg-white transition-all duration-200"
+              className="w-full px-4 py-3.5 bg-surface-elevated border border-border text-text-primary text-sm placeholder:text-text-muted focus:outline-none focus:border-accent/50 transition-all duration-200"
             />
           </div>
 
           <div>
-            <label className="block text-xs font-medium text-muted mb-2">Middle Notes <span className="text-muted/40">(pisahkan koma)</span></label>
+            <label className="block text-xs font-medium text-text-muted mb-2 tracking-wider uppercase">Middle Notes <span className="text-text-muted/40">(pisahkan koma)</span></label>
             <input
               type="text"
               value={form.middleNotes}
               onChange={(e) => setForm({ ...form, middleNotes: e.target.value })}
               placeholder="Rose, Jasmine, Iris"
-              className="w-full px-4 py-3.5 bg-white/70 border border-gold-light/30 rounded-xl text-sm focus:outline-none focus:border-gold/50 focus:bg-white transition-all duration-200"
+              className="w-full px-4 py-3.5 bg-surface-elevated border border-border text-text-primary text-sm placeholder:text-text-muted focus:outline-none focus:border-accent/50 transition-all duration-200"
             />
           </div>
 
           <div>
-            <label className="block text-xs font-medium text-muted mb-2">Base Notes <span className="text-muted/40">(pisahkan koma)</span></label>
+            <label className="block text-xs font-medium text-text-muted mb-2 tracking-wider uppercase">Base Notes <span className="text-text-muted/40">(pisahkan koma)</span></label>
             <input
               type="text"
               value={form.baseNotes}
               onChange={(e) => setForm({ ...form, baseNotes: e.target.value })}
               placeholder="Musk, Sandalwood, Vanilla"
-              className="w-full px-4 py-3.5 bg-white/70 border border-gold-light/30 rounded-xl text-sm focus:outline-none focus:border-gold/50 focus:bg-white transition-all duration-200"
+              className="w-full px-4 py-3.5 bg-surface-elevated border border-border text-text-primary text-sm placeholder:text-text-muted focus:outline-none focus:border-accent/50 transition-all duration-200"
             />
           </div>
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-medium text-muted mb-2">Rating</label>
+              <label className="block text-xs font-medium text-text-muted mb-2 tracking-wider uppercase">Rating</label>
               <div className="flex items-center gap-1.5 py-2">
                 {[1, 2, 3, 4, 5].map((star) => (
                   <button
@@ -352,7 +348,7 @@ function AddPerfumeModal({ onClose, onAdd }: { onClose: () => void; onAdd: (p: O
                   >
                     <Star
                       className={`w-7 h-7 transition-colors ${
-                        star <= form.rating ? 'text-gold fill-gold' : 'text-gold-light/30'
+                        star <= form.rating ? 'text-accent fill-accent' : 'text-border'
                       }`}
                     />
                   </button>
@@ -360,30 +356,30 @@ function AddPerfumeModal({ onClose, onAdd }: { onClose: () => void; onAdd: (p: O
               </div>
             </div>
             <div>
-              <label className="block text-xs font-medium text-muted mb-2">Tanggal Beli</label>
+              <label className="block text-xs font-medium text-text-muted mb-2 tracking-wider uppercase">Tanggal Beli</label>
               <input
                 type="date"
                 value={form.purchaseDate}
                 onChange={(e) => setForm({ ...form, purchaseDate: e.target.value })}
-                className="w-full px-4 py-3.5 bg-white/70 border border-gold-light/30 rounded-xl text-sm focus:outline-none focus:border-gold/50 focus:bg-white transition-all duration-200"
+                className="w-full px-4 py-3.5 bg-surface-elevated border border-border text-text-primary text-sm focus:outline-none focus:border-accent/50 transition-all duration-200"
               />
             </div>
           </div>
 
           <div>
-            <label className="block text-xs font-medium text-muted mb-2">Deskripsi <span className="text-muted/40">(opsional)</span></label>
+            <label className="block text-xs font-medium text-text-muted mb-2 tracking-wider uppercase">Deskripsi <span className="text-text-muted/40">(opsional)</span></label>
             <textarea
               value={form.description}
               onChange={(e) => setForm({ ...form, description: e.target.value })}
               rows={3}
               placeholder="Ceritakan pengalamanmu dengan parfum ini..."
-              className="w-full px-4 py-3.5 bg-white/70 border border-gold-light/30 rounded-xl text-sm focus:outline-none focus:border-gold/50 focus:bg-white transition-all duration-200 resize-none"
+              className="w-full px-4 py-3.5 bg-surface-elevated border border-border text-text-primary text-sm placeholder:text-text-muted focus:outline-none focus:border-accent/50 transition-all duration-200 resize-none"
             />
           </div>
 
           <button
             type="submit"
-            className="w-full py-4 bg-charcoal text-cream rounded-xl text-sm font-medium hover:bg-deep-brown transition-all duration-300 hover:shadow-lg mt-2"
+            className="w-full py-4 bg-accent text-primary text-sm font-semibold tracking-wider uppercase hover:bg-accent-light transition-all duration-300 mt-2"
           >
             Simpan Parfum
           </button>

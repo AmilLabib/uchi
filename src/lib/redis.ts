@@ -26,6 +26,7 @@ export const API_ENDPOINTS = {
   perfumes: '/api/perfumes',
   moments: '/api/moments',
   journal: '/api/journal',
+  profile: '/api/profile',
 }
 
 export async function syncToCloud(endpoint: string, userId: string, data: unknown) {

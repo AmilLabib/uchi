@@ -5,6 +5,9 @@ import Collection from './pages/Collection'
 import Moments from './pages/Moments'
 import Journal from './pages/Journal'
 import Timeline from './pages/Timeline'
+import ScentOfTheSoul from './pages/ScentOfTheSoul'
+import FindYourSoul from './pages/FindYourSoul'
+import UchiMate from './pages/UchiMate'
 
 function App() {
   return (
@@ -15,6 +18,9 @@ function App() {
         <Route path="moments" element={<Moments />} />
         <Route path="journal" element={<Journal />} />
         <Route path="timeline" element={<Timeline />} />
+        <Route path="scent-of-the-soul" element={<ScentOfTheSoul />} />
+        <Route path="find-your-soul" element={<FindYourSoul />} />
+        <Route path="uchiMate" element={<UchiMate />} />
       </Route>
     </Routes>
   )
