@@ -4,12 +4,9 @@ import { Menu, X } from 'lucide-react'
 
 const navLinks = [
   { path: '/', label: 'Home' },
-  { path: '/scent-of-the-soul', label: 'Scent of The Soul' },
   { path: '/find-your-soul', label: 'Find Your Soul' },
-  { path: '/collection', label: 'Collection' },
-  { path: '/moments', label: 'Moments' },
-  { path: '/journal', label: 'Journal' },
-  { path: '/timeline', label: 'Timeline' },
+  { path: '/scent-of-the-soul', label: 'Scent of The Soul' },
+  { path: '/my-story', label: 'My Story' },
   { path: '/uchiMate', label: 'UchiMate' },
 ]
 

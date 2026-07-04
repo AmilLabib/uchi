@@ -3,27 +3,27 @@ import { ArrowRight, Droplets, Camera, BookOpen, Clock } from 'lucide-react'
 
 const features = [
   {
-    icon: Droplets,
-    title: 'Scent of The Soul',
-    subtitle: 'Your Fragrance Identity',
-    description: 'Lihat jati dirimu melalui aroma. Koleksi parfum, soundtrack Spotify, galeri kenangan, dan share ke sosial media.',
-    link: '/scent-of-the-soul',
-    number: '01',
-  },
-  {
     icon: Camera,
     title: 'Find Your Soul',
     subtitle: 'AI Recommendation',
     description: 'Temukan parfum UCHI yang paling cocok dengan aktivitas, mood, dan kepribadianmu melalui rekomendasi cerdas.',
     link: '/find-your-soul',
+    number: '01',
+  },
+  {
+    icon: Droplets,
+    title: 'Scent of The Soul',
+    subtitle: 'Your Fragrance Collection',
+    description: 'Koleksi parfum favoritmu, abadikan momen berharga, dan bagikan cerita aromamu ke dunia.',
+    link: '/scent-of-the-soul',
     number: '02',
   },
   {
     icon: BookOpen,
-    title: 'Collection & Journal',
-    subtitle: 'Scent Diary',
-    description: 'Catat koleksi parfummu, tulis jurnal harian, dan abadikan momen-momen berharga bersama wangimu.',
-    link: '/collection',
+    title: 'My Story',
+    subtitle: 'Scent Journal',
+    description: 'Tulis jurnal harian aromamu. Rekam performa, mood, dan perjalanan wangimu dalam timeline personal.',
+    link: '/my-story',
     number: '03',
   },
   {

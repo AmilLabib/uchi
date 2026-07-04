@@ -1,9 +1,14 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { gsap } from 'gsap'
-import { Music, Image, Share2, Heart, MessageCircle, QrCode, X, Download, Plus } from 'lucide-react'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import { Plus, Star, X, Search, Filter, Droplets, Camera, MapPin, Calendar, Heart, Image as ImageIcon } from 'lucide-react'
 import { usePerfumeStore, useMomentStore } from '../store/useStore'
-import type { Perfume } from '../types'
-import { categoryLabels } from '../types'
+import type { Perfume, Moment } from '../types'
+import { categoryLabels, moodLabels, moodColors } from '../types'
+
+gsap.registerPlugin(ScrollTrigger)
+
+const categories: Perfume['category'][] = ['fresh', 'floral', 'woody', 'oriental', 'citrus', 'gourmand']
 
 const categoryEmoji: Record<Perfume['category'], string> = {
   fresh: '🌊',
@@ -14,19 +19,40 @@ const categoryEmoji: Record<Perfume['category'], string> = {
   gourmand: '🍫',
 }
 
-// Mock comments
-const mockComments = [
-  { id: '1', author: 'Rina', text: 'Wangi banget! Aku juga punya yang ini 💕', date: '2024-12-15', likes: 5 },
-  { id: '2', author: 'Dimas', text: 'Cocok bgt sama vibes lo bro', date: '2024-12-14', likes: 3 },
-  { id: '3', author: 'Sarah', text: 'Koleksi goals sih ini ✨', date: '2024-12-13', likes: 8 },
-]
+const moods: Moment['mood'][] = ['romantic', 'adventurous', 'peaceful', 'energetic', 'nostalgic', 'confident']
+
+const moodEmoji: Record<Moment['mood'], string> = {
+  romantic: '💕',
+  adventurous: '🌍',
+  peaceful: '🌿',
+  energetic: '⚡',
+  nostalgic: '🌅',
+  confident: '✨',
+}
+
+type ViewMode = 'perfumes' | 'moments'
 
 export default function ScentOfTheSoul() {
-  const { perfumes } = usePerfumeStore()
-  const { moments } = useMomentStore()
-  const [selectedPerfume, setSelectedPerfume] = useState<Perfume | null>(null)
-  const [showShareModal, setShowShareModal] = useState(false)
-  const [showQRModal, setShowQRModal] = useState(false)
+  const { perfumes, addPerfume, deletePerfume } = usePerfumeStore()
+  const { moments, addMoment, deleteMoment } = useMomentStore()
+  const [viewMode, setViewMode] = useState<ViewMode>('perfumes')
+  const [showPerfumeForm, setShowPerfumeForm] = useState(false)
+  const [showMomentForm, setShowMomentForm] = useState(false)
+  const [filter, setFilter] = useState<Perfume['category'] | 'all'>('all')
+  const [moodFilter, setMoodFilter] = useState<Moment['mood'] | 'all'>('all')
+  const [search, setSearch] = useState('')
+  const gridRef = useRef<HTMLDivElement>(null)
+
+  const filteredPerfumes = perfumes.filter((p) => {
+    const matchesCategory = filter === 'all' || p.category === filter
+    const matchesSearch = p.name.toLowerCase().includes(search.toLowerCase()) ||
+      p.brand.toLowerCase().includes(search.toLowerCase())
+    return matchesCategory && matchesSearch
+  })
+
+  const filteredMoments = moments.filter(
+    (m) => moodFilter === 'all' || m.mood === moodFilter
+  )
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -34,16 +60,23 @@ export default function ScentOfTheSoul() {
         { y: 40, opacity: 0 },
         { y: 0, opacity: 1, duration: 0.8, ease: 'power3.out' }
       )
-      gsap.fromTo('.soul-card',
-        { y: 30, opacity: 0, scale: 0.96 },
-        { y: 0, opacity: 1, scale: 1, duration: 0.5, stagger: 0.08, ease: 'power2.out', delay: 0.2 }
+      gsap.fromTo('.controls-bar',
+        { y: 20, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.6, delay: 0.2, ease: 'power3.out' }
       )
     })
     return () => ctx.revert()
   }, [])
 
-  const perfumePhotos = (perfumeId: string) =>
-    moments.filter((m) => m.perfumeId === perfumeId && m.images.length > 0)
+  useEffect(() => {
+    if (gridRef.current) {
+      const cards = gridRef.current.querySelectorAll('.perfume-card, .moment-card')
+      gsap.fromTo(cards,
+        { y: 40, opacity: 0, scale: 0.96 },
+        { y: 0, opacity: 1, scale: 1, duration: 0.5, stagger: 0.08, ease: 'power2.out' }
+      )
+    }
+  }, [filteredPerfumes.length, filteredMoments.length, filter, moodFilter, search, viewMode])
 
   return (
     <div className="min-h-screen pt-28 md:pt-32 pb-20 px-6">
@@ -54,413 +87,663 @@ export default function ScentOfTheSoul() {
           <h1 className="font-serif text-4xl sm:text-5xl md:text-6xl text-text-primary font-medium mt-4">
             Scent of <span className="italic text-gradient">The Soul</span>
           </h1>
-          <p className="mt-4 text-text-secondary max-w-lg mx-auto text-sm md:text-base">
-            Jati dirimu tercermin dari aroma yang kau pilih. Lihat koleksi, kenangan, dan cerita di balik setiap parfummu.
+          <p className="mt-4 text-text-secondary max-w-md mx-auto text-sm md:text-base">
+            Koleksi parfum favoritmu dan momen-momen berharga yang telah kau abadikan bersama wangi kesayanganmu.
           </p>
         </div>
 
-        {/* User Profile Header */}
-        <div className="text-center mb-12">
-          <div className="w-20 h-20 mx-auto border-2 border-accent/30 rounded-full flex items-center justify-center mb-4 bg-surface-card">
-            <span className="text-3xl">✨</span>
-          </div>
-          <p className="text-sm text-text-muted">
-            {perfumes.length} parfum dalam koleksi • {moments.length} momen terabadikan
-          </p>
+        {/* View Mode Toggle */}
+        <div className="flex items-center justify-center gap-3 mb-10">
+          <button
+            onClick={() => setViewMode('perfumes')}
+            className={`px-6 py-3 text-sm font-medium tracking-wider uppercase transition-all duration-300 flex items-center gap-2 ${
+              viewMode === 'perfumes' ? 'bg-accent text-primary' : 'bg-surface-card border border-border text-text-secondary hover:border-accent/30'
+            }`}
+          >
+            <Droplets className="w-4 h-4" />
+            Koleksi Parfum
+          </button>
+          <button
+            onClick={() => setViewMode('moments')}
+            className={`px-6 py-3 text-sm font-medium tracking-wider uppercase transition-all duration-300 flex items-center gap-2 ${
+              viewMode === 'moments' ? 'bg-accent text-primary' : 'bg-surface-card border border-border text-text-secondary hover:border-accent/30'
+            }`}
+          >
+            <Camera className="w-4 h-4" />
+            Momen Berharga
+          </button>
         </div>
 
-        {/* Perfume Collection Grid */}
-        {perfumes.length === 0 ? (
-          <div className="text-center py-20">
-            <div className="w-20 h-20 mx-auto border border-accent/20 flex items-center justify-center mb-6">
-              <Music className="w-9 h-9 text-accent/40" />
+        {/* Controls */}
+        {viewMode === 'perfumes' ? (
+          <div className="controls-bar space-y-5 mb-10">
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+              {/* Search */}
+              <div className="relative w-full sm:w-80">
+                <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted" />
+                <input
+                  type="text"
+                  placeholder="Cari parfum..."
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  className="w-full pl-11 pr-4 py-3.5 bg-surface-card border border-border text-text-primary text-sm placeholder:text-text-muted focus:outline-none focus:border-accent/50 transition-all duration-300"
+                />
+              </div>
+
+              {/* Add Button */}
+              <button
+                onClick={() => setShowPerfumeForm(true)}
+                className="flex items-center gap-2 px-6 py-3.5 bg-accent text-primary text-sm font-semibold tracking-wider uppercase hover:bg-accent-light transition-all duration-300 flex-shrink-0"
+              >
+                <Plus className="w-4 h-4" />
+                Tambah Parfum
+              </button>
             </div>
-            <p className="text-text-secondary font-serif text-xl">Belum ada parfum dalam koleksimu</p>
-            <p className="text-sm text-text-muted mt-2">Tambahkan parfum di halaman Collection terlebih dahulu</p>
+
+            {/* Filter pills */}
+            <div className="flex items-center gap-2 flex-wrap justify-center sm:justify-start">
+              <Filter className="w-4 h-4 text-text-muted mr-1" />
+              <button
+                onClick={() => setFilter('all')}
+                className={`px-4 py-2 text-xs font-medium tracking-wider uppercase transition-all duration-300 ${
+                  filter === 'all'
+                    ? 'bg-accent text-primary'
+                    : 'bg-surface-card border border-border text-text-secondary hover:border-accent/30 hover:text-accent'
+                }`}
+              >
+                Semua
+              </button>
+              {categories.map((cat) => (
+                <button
+                  key={cat}
+                  onClick={() => setFilter(cat)}
+                  className={`px-4 py-2 text-xs font-medium tracking-wider transition-all duration-300 flex items-center gap-1.5 ${
+                    filter === cat
+                      ? 'bg-accent text-primary'
+                      : 'bg-surface-card border border-border text-text-secondary hover:border-accent/30 hover:text-accent'
+                  }`}
+                >
+                  <span>{categoryEmoji[cat]}</span>
+                  {categoryLabels[cat]}
+                </button>
+              ))}
+            </div>
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-            {perfumes.map((perfume) => (
-              <div
-                key={perfume.id}
-                onClick={() => setSelectedPerfume(perfume)}
-                className="soul-card group relative p-6 bg-surface-card border border-border hover:border-accent/30 cursor-pointer transition-all duration-500 hover-glow"
+          <div className="flex items-center justify-between gap-4 mb-10 flex-wrap">
+            <div className="flex items-center gap-2 flex-wrap">
+              <button
+                onClick={() => setMoodFilter('all')}
+                className={`px-4 py-2 text-xs font-medium tracking-wider uppercase transition-all duration-300 ${
+                  moodFilter === 'all'
+                    ? 'bg-accent text-primary'
+                    : 'bg-surface-card border border-border text-text-secondary hover:border-accent/30 hover:text-accent'
+                }`}
               >
-                {/* Verified badge */}
-                {perfume.verified && (
-                  <div className="absolute top-4 right-4 px-2 py-0.5 bg-accent/20 border border-accent/30 text-[10px] text-accent font-medium tracking-wider">
-                    VERIFIED ✓
-                  </div>
-                )}
+                Semua
+              </button>
+              {moods.map((mood) => (
+                <button
+                  key={mood}
+                  onClick={() => setMoodFilter(mood)}
+                  className={`px-4 py-2 text-xs font-medium tracking-wider transition-all duration-300 flex items-center gap-1.5 ${
+                    moodFilter === mood
+                      ? 'bg-accent text-primary'
+                      : 'bg-surface-card border border-border text-text-secondary hover:border-accent/30 hover:text-accent'
+                  }`}
+                >
+                  <span>{moodEmoji[mood]}</span>
+                  {moodLabels[mood]}
+                </button>
+              ))}
+            </div>
 
-                <div className="w-14 h-14 mx-auto mb-4 border border-accent/20 flex items-center justify-center group-hover:border-accent/40 transition-all">
-                  <span className="text-2xl">{categoryEmoji[perfume.category]}</span>
+            <button
+              onClick={() => setShowMomentForm(true)}
+              className="flex items-center gap-2 px-6 py-3.5 bg-accent text-primary text-sm font-semibold tracking-wider uppercase hover:bg-accent-light transition-all duration-300 flex-shrink-0"
+            >
+              <Plus className="w-4 h-4" />
+              Tambah Momen
+            </button>
+          </div>
+        )}
+
+        {/* Grid */}
+        {viewMode === 'perfumes' ? (
+          <div ref={gridRef} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-px bg-border">
+            {filteredPerfumes.length === 0 ? (
+              <div className="col-span-full bg-primary text-center py-28">
+                <div className="w-20 h-20 mx-auto border border-accent/20 flex items-center justify-center mb-6">
+                  <Droplets className="w-9 h-9 text-accent/40" />
                 </div>
-
-                <h3 className="font-serif text-lg text-text-primary text-center group-hover:text-accent transition-colors">
-                  {perfume.name}
-                </h3>
-                <p className="text-xs text-text-muted text-center mt-1 tracking-wider uppercase">
-                  {categoryLabels[perfume.category]}
-                </p>
-
-                {/* Photo count */}
-                <div className="flex items-center justify-center gap-3 mt-4 text-[11px] text-text-muted">
-                  <span className="flex items-center gap-1">
-                    <Image className="w-3 h-3" />
-                    {perfumePhotos(perfume.id).length} foto
-                  </span>
-                  {perfume.spotifyUrl && (
-                    <span className="flex items-center gap-1 text-green-400">
-                      <Music className="w-3 h-3" />
-                      Spotify
-                    </span>
-                  )}
-                </div>
+                <p className="text-text-secondary font-serif text-xl">Belum ada parfum dalam koleksimu</p>
+                <p className="text-sm text-text-muted mt-2 mb-8">Mulai tambahkan koleksi Uchi favoritmu</p>
+                <button
+                  onClick={() => setShowPerfumeForm(true)}
+                  className="inline-flex items-center gap-2 px-6 py-3.5 bg-accent text-primary text-sm font-semibold tracking-wider uppercase hover:bg-accent-light transition-colors"
+                >
+                  <Plus className="w-4 h-4" />
+                  Tambah Parfum Pertama
+                </button>
               </div>
-            ))}
+            ) : (
+              filteredPerfumes.map((perfume) => (
+                <PerfumeCard key={perfume.id} perfume={perfume} onDelete={deletePerfume} />
+              ))
+            )}
+          </div>
+        ) : (
+          <div ref={gridRef} className="columns-1 sm:columns-2 lg:columns-3 gap-5 space-y-5">
+            {filteredMoments.length === 0 ? (
+              <div className="col-span-full text-center py-28 break-inside-avoid">
+                <div className="w-20 h-20 mx-auto border border-accent/20 flex items-center justify-center mb-6">
+                  <Heart className="w-9 h-9 text-accent/40" />
+                </div>
+                <p className="text-text-secondary font-serif text-xl">Belum ada momen yang diabadikan</p>
+                <p className="text-sm text-text-muted mt-2 mb-8">Mulai abadikan momen-momen indahmu</p>
+                <button
+                  onClick={() => setShowMomentForm(true)}
+                  className="inline-flex items-center gap-2 px-6 py-3.5 bg-accent text-primary text-sm font-semibold tracking-wider uppercase hover:bg-accent-light transition-colors"
+                >
+                  <Plus className="w-4 h-4" />
+                  Abadikan Momen Pertama
+                </button>
+              </div>
+            ) : (
+              filteredMoments.map((moment) => (
+                <MomentCard
+                  key={moment.id}
+                  moment={moment}
+                  perfumeName={perfumes.find((p) => p.id === moment.perfumeId)?.name}
+                  onDelete={deleteMoment}
+                />
+              ))
+            )}
           </div>
         )}
       </div>
 
-      {/* Detail Modal */}
-      {selectedPerfume && (
-        <PerfumeDetailModal
-          perfume={selectedPerfume}
-          photos={perfumePhotos(selectedPerfume.id)}
-          onClose={() => setSelectedPerfume(null)}
-          onShare={() => setShowShareModal(true)}
-          onQR={() => setShowQRModal(true)}
-        />
+      {/* Add Form Modals */}
+      {showPerfumeForm && (
+        <AddPerfumeModal onClose={() => setShowPerfumeForm(false)} onAdd={addPerfume} />
       )}
-
-      {/* Share Modal */}
-      {showShareModal && selectedPerfume && (
-        <ShareModal
-          perfume={selectedPerfume}
-          onClose={() => setShowShareModal(false)}
+      {showMomentForm && (
+        <AddMomentModal
+          onClose={() => setShowMomentForm(false)}
+          onAdd={addMoment}
+          perfumes={perfumes}
         />
-      )}
-
-      {/* QR Modal */}
-      {showQRModal && (
-        <QRModal onClose={() => setShowQRModal(false)} />
       )}
     </div>
   )
 }
 
-function PerfumeDetailModal({
-  perfume,
-  photos,
-  onClose,
-  onShare,
-  onQR,
-}: {
-  perfume: Perfume
-  photos: { id: string; title: string; images: string[]; date: string }[]
-  onClose: () => void
-  onShare: () => void
-  onQR: () => void
-}) {
-  const [showComments, setShowComments] = useState(false)
-
+function PerfumeCard({ perfume, onDelete }: { perfume: Perfume; onDelete: (id: string) => void }) {
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-      <div className="absolute inset-0 bg-black/85 backdrop-blur-md" onClick={onClose} />
-      <div className="relative w-full max-w-2xl max-h-[90vh] overflow-y-auto bg-surface-card border border-border shadow-2xl animate-fade-up">
-        {/* Header */}
-        <div className="sticky top-0 z-10 flex items-center justify-between p-5 bg-surface-card/95 backdrop-blur-sm border-b border-border">
-          <div>
-            <h2 className="font-serif text-xl text-text-primary">{perfume.name}</h2>
-            <p className="text-xs text-text-muted tracking-wider uppercase mt-0.5">{perfume.brand}</p>
-          </div>
-          <div className="flex items-center gap-2">
-            <button
-              onClick={onQR}
-              className="p-2.5 border border-border hover:border-accent/30 text-text-muted hover:text-accent transition-all"
-              aria-label="Scan QR"
-            >
-              <QrCode className="w-4 h-4" />
-            </button>
-            <button
-              onClick={onShare}
-              className="p-2.5 border border-border hover:border-accent/30 text-text-muted hover:text-accent transition-all"
-              aria-label="Share"
-            >
-              <Share2 className="w-4 h-4" />
-            </button>
-            <button
-              onClick={onClose}
-              className="p-2.5 hover:bg-surface-elevated text-text-muted transition-all"
-              aria-label="Tutup"
-            >
-              <X className="w-5 h-5" />
-            </button>
-          </div>
-        </div>
+    <div className="perfume-card group relative p-8 bg-primary hover:bg-surface-card transition-all duration-500">
+      {/* Delete */}
+      <button
+        onClick={() => onDelete(perfume.id)}
+        className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 p-2 border border-border hover:border-rose/40 text-text-muted hover:text-rose transition-all duration-200"
+        aria-label="Hapus parfum"
+      >
+        <X className="w-3.5 h-3.5" />
+      </button>
 
-        <div className="p-6 space-y-8">
-          {/* Perfume Visual */}
-          <div className="text-center py-8 bg-surface-elevated border border-border-light overflow-hidden relative">
-            {perfume.image ? (
-              <>
-                <img src={perfume.image} alt={perfume.name} className="w-full h-48 object-cover absolute inset-0 opacity-20 blur-sm" />
-                <div className="relative z-10">
-                  <span className="text-5xl block mb-4">{categoryEmoji[perfume.category]}</span>
-                  <h3 className="font-serif text-2xl text-gradient">{perfume.name}</h3>
-                  <p className="text-sm text-text-secondary mt-2">{categoryLabels[perfume.category]} • {perfume.brand}</p>
-                </div>
-              </>
-            ) : (
-              <>
-                <span className="text-5xl block mb-4">{categoryEmoji[perfume.category]}</span>
-                <h3 className="font-serif text-2xl text-gradient">{perfume.name}</h3>
-                <p className="text-sm text-text-secondary mt-2">{categoryLabels[perfume.category]} • {perfume.brand}</p>
-              </>
-            )}
-            {perfume.description && (
-              <p className="text-sm text-text-muted mt-3 max-w-md mx-auto italic relative z-10">"{perfume.description}"</p>
-            )}
-          </div>
-
-          {/* Spotify Embed */}
-          {perfume.spotifyUrl && (
-            <div>
-              <h4 className="text-xs font-medium text-text-muted mb-3 tracking-wider uppercase flex items-center gap-2">
-                <Music className="w-3.5 h-3.5 text-green-400" />
-                Soundtrack Aroma
-              </h4>
-              <div className="rounded-lg overflow-hidden">
-                <iframe
-                  src={`https://open.spotify.com/embed/track/${extractSpotifyId(perfume.spotifyUrl)}?theme=0`}
-                  width="100%"
-                  height="152"
-                  allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
-                  loading="lazy"
-                  className="border-0"
-                  title={`Spotify - ${perfume.name}`}
-                />
-              </div>
-            </div>
-          )}
-
-          {/* Photo Gallery */}
-          <div>
-            <h4 className="text-xs font-medium text-text-muted mb-3 tracking-wider uppercase flex items-center gap-2">
-              <Image className="w-3.5 h-3.5" />
-              Momen dengan {perfume.name}
-            </h4>
-            {photos.length > 0 ? (
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-                {photos.flatMap((m) =>
-                  m.images.map((img, i) => (
-                    <div key={`${m.id}-${i}`} className="aspect-square overflow-hidden bg-surface-elevated border border-border-light group">
-                      <img
-                        src={img}
-                        alt={m.title}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                      />
-                    </div>
-                  ))
-                )}
-              </div>
-            ) : (
-              <div className="text-center py-10 border border-border-light bg-surface-elevated">
-                <Image className="w-8 h-8 text-text-muted/30 mx-auto mb-2" />
-                <p className="text-xs text-text-muted">Belum ada foto. Tambah momen di halaman Moments.</p>
-              </div>
-            )}
-          </div>
-
-          {/* Social Interactions (Mock) */}
-          <div>
-            <div className="flex items-center justify-between mb-3">
-              <h4 className="text-xs font-medium text-text-muted tracking-wider uppercase">Interaksi</h4>
-              <button
-                onClick={() => setShowComments(!showComments)}
-                className="text-xs text-accent hover:text-accent-light transition-colors"
-              >
-                {showComments ? 'Sembunyikan' : 'Lihat'} komentar
-              </button>
-            </div>
-
-            <div className="flex items-center gap-6 p-4 bg-surface-elevated border border-border-light">
-              <button className="flex items-center gap-1.5 text-text-secondary hover:text-rose transition-colors">
-                <Heart className="w-5 h-5" />
-                <span className="text-sm">24</span>
-              </button>
-              <button className="flex items-center gap-1.5 text-text-secondary hover:text-accent transition-colors">
-                <MessageCircle className="w-5 h-5" />
-                <span className="text-sm">{mockComments.length}</span>
-              </button>
-              <button
-                onClick={onShare}
-                className="flex items-center gap-1.5 text-text-secondary hover:text-accent transition-colors ml-auto"
-              >
-                <Share2 className="w-5 h-5" />
-                <span className="text-sm">Share</span>
-              </button>
-            </div>
-
-            {showComments && (
-              <div className="mt-3 space-y-2">
-                {mockComments.map((comment) => (
-                  <div key={comment.id} className="p-3 bg-surface-elevated border border-border-light">
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm font-medium text-text-primary">{comment.author}</span>
-                      <span className="text-[10px] text-text-muted">{comment.date}</span>
-                    </div>
-                    <p className="text-sm text-text-secondary mt-1">{comment.text}</p>
-                    <div className="flex items-center gap-1 mt-2 text-text-muted">
-                      <Heart className="w-3 h-3" />
-                      <span className="text-[11px]">{comment.likes}</span>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-        </div>
+      {/* Perfume visual */}
+      <div className="w-16 h-16 mx-auto mb-6 border border-accent/20 flex items-center justify-center group-hover:border-accent/40 transition-all duration-300">
+        <span className="text-2xl">{categoryEmoji[perfume.category]}</span>
       </div>
-    </div>
-  )
-}
 
-function ShareModal({ perfume, onClose }: { perfume: Perfume; onClose: () => void }) {
-  const shareOptions = [
-    {
-      name: 'Instagram Story',
-      icon: '📸',
-      description: 'Buat story aesthetic dengan info parfummu',
-      gradient: 'from-purple-500 to-pink-500',
-    },
-    {
-      name: 'Instagram Feed',
-      icon: '🖼️',
-      description: 'Generate post feed yang clean & premium',
-      gradient: 'from-amber-500 to-rose-500',
-    },
-    {
-      name: 'TikTok',
-      icon: '🎬',
-      description: 'Template video pendek tentang aromamu',
-      gradient: 'from-cyan-500 to-blue-500',
-    },
-  ]
+      <h3 className="font-serif text-xl text-text-primary text-center leading-tight group-hover:text-accent transition-colors duration-300">
+        {perfume.name}
+      </h3>
+      <p className="text-xs text-text-muted text-center mt-2 tracking-wider uppercase">{perfume.brand}</p>
 
-  return (
-    <div className="fixed inset-0 z-[60] flex items-center justify-center p-4">
-      <div className="absolute inset-0 bg-black/80 backdrop-blur-md" onClick={onClose} />
-      <div className="relative w-full max-w-md bg-surface-card border border-border shadow-2xl p-6 animate-fade-up">
-        <button onClick={onClose} className="absolute top-4 right-4 p-2 hover:bg-surface-elevated transition-colors" aria-label="Tutup">
-          <X className="w-5 h-5 text-text-muted" />
-        </button>
+      {/* Category Badge */}
+      <div className="flex justify-center mt-4">
+        <span className="px-3 py-1 border border-accent/20 text-accent text-[11px] font-medium tracking-wider uppercase">
+          {categoryLabels[perfume.category]}
+        </span>
+      </div>
 
-        <div className="mb-6">
-          <span className="text-xs font-medium tracking-[0.3em] uppercase text-accent">Share</span>
-          <h3 className="font-serif text-xl text-text-primary mt-2">Bagikan {perfume.name}</h3>
-          <p className="text-xs text-text-muted mt-1">Pilih platform untuk membuat konten estetik</p>
-        </div>
+      {/* Rating */}
+      <div className="flex items-center justify-center gap-1 mt-5">
+        {[1, 2, 3, 4, 5].map((star) => (
+          <Star
+            key={star}
+            className={`w-4 h-4 transition-colors ${star <= perfume.rating ? 'text-accent fill-accent' : 'text-border'}`}
+          />
+        ))}
+      </div>
 
-        <div className="space-y-3">
-          {shareOptions.map((option) => (
-            <button
-              key={option.name}
-              className="w-full flex items-center gap-4 p-4 bg-surface-elevated border border-border hover:border-accent/30 transition-all duration-300 text-left group"
-              onClick={() => {
-                // Generate a sharable card (mock - just download prompt)
-                alert(`🎨 Generating ${option.name} card untuk "${perfume.name}"...\n\nFitur ini akan menghasilkan gambar aesthetic yang bisa kamu download & share langsung.`)
-              }}
-            >
-              <span className="text-2xl">{option.icon}</span>
-              <div className="flex-1">
-                <p className="text-sm font-medium text-text-primary group-hover:text-accent transition-colors">{option.name}</p>
-                <p className="text-xs text-text-muted mt-0.5">{option.description}</p>
-              </div>
-              <Download className="w-4 h-4 text-text-muted group-hover:text-accent transition-colors" />
-            </button>
+      {/* Notes preview */}
+      {perfume.notes.top.length > 0 && (
+        <div className="mt-5 flex flex-wrap gap-1.5 justify-center">
+          {perfume.notes.top.slice(0, 3).map((note) => (
+            <span key={note} className="px-2.5 py-0.5 bg-surface-elevated text-[11px] text-text-muted border border-border-light">
+              {note}
+            </span>
           ))}
         </div>
+      )}
 
-        <p className="text-[11px] text-text-muted text-center mt-5">
-          Teman yang melihat share-mu bisa mengunjungi profil ini dan melihat koleksi aromamu
-        </p>
-      </div>
+      {/* Date */}
+      <p className="mt-6 text-[11px] text-text-muted text-center border-t border-border pt-5">
+        Dibeli {new Date(perfume.purchaseDate).toLocaleDateString('id-ID', { month: 'long', year: 'numeric' })}
+      </p>
     </div>
   )
 }
 
-function QRModal({ onClose }: { onClose: () => void }) {
-  const [code, setCode] = useState('')
-  const [status, setStatus] = useState<'idle' | 'success' | 'error'>('idle')
+function AddPerfumeModal({ onClose, onAdd }: { onClose: () => void; onAdd: (p: Omit<Perfume, 'id'>) => void }) {
+  const [form, setForm] = useState({
+    name: '',
+    brand: 'Uchi Parfume',
+    category: 'fresh' as Perfume['category'],
+    topNotes: '',
+    middleNotes: '',
+    baseNotes: '',
+    rating: 5,
+    purchaseDate: new Date().toISOString().split('T')[0],
+    description: '',
+  })
 
-  const handleVerify = () => {
-    // Mock QR verification
-    if (code.length >= 6) {
-      setStatus('success')
-    } else {
-      setStatus('error')
-    }
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    onAdd({
+      name: form.name,
+      brand: form.brand,
+      category: form.category,
+      notes: {
+        top: form.topNotes.split(',').map((n) => n.trim()).filter(Boolean),
+        middle: form.middleNotes.split(',').map((n) => n.trim()).filter(Boolean),
+        base: form.baseNotes.split(',').map((n) => n.trim()).filter(Boolean),
+      },
+      rating: form.rating,
+      purchaseDate: form.purchaseDate,
+      description: form.description,
+    })
+    onClose()
   }
 
   return (
-    <div className="fixed inset-0 z-[60] flex items-center justify-center p-4">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       <div className="absolute inset-0 bg-black/80 backdrop-blur-md" onClick={onClose} />
-      <div className="relative w-full max-w-sm bg-surface-card border border-border shadow-2xl p-6 animate-fade-up">
-        <button onClick={onClose} className="absolute top-4 right-4 p-2 hover:bg-surface-elevated transition-colors" aria-label="Tutup">
+      <div className="relative w-full max-w-lg max-h-[90vh] overflow-y-auto bg-surface-card border border-border shadow-2xl p-6 sm:p-8 animate-fade-up">
+        <button
+          onClick={onClose}
+          className="absolute top-5 right-5 p-2 hover:bg-surface-elevated transition-colors"
+          aria-label="Tutup"
+        >
           <X className="w-5 h-5 text-text-muted" />
         </button>
 
-        <div className="text-center mb-6">
-          <div className="w-16 h-16 mx-auto border border-accent/30 flex items-center justify-center mb-4">
-            <QrCode className="w-8 h-8 text-accent" />
-          </div>
-          <h3 className="font-serif text-xl text-text-primary">Verifikasi Kepemilikan</h3>
-          <p className="text-xs text-text-muted mt-2">
-            Scan QR code pada botol/packaging UCHI untuk verifikasi keaslian
-          </p>
+        <div className="mb-8">
+          <span className="text-xs font-medium tracking-[0.3em] uppercase text-accent">Add New</span>
+          <h2 className="font-serif text-2xl text-text-primary mt-2">Parfum Baru</h2>
         </div>
 
-        <div className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-5">
           <div>
-            <label className="block text-xs font-medium text-text-muted mb-2 tracking-wider uppercase">Kode Aktivasi</label>
+            <label className="block text-xs font-medium text-text-muted mb-2 tracking-wider uppercase">Nama Parfum *</label>
             <input
               type="text"
-              value={code}
-              onChange={(e) => { setCode(e.target.value); setStatus('idle') }}
-              placeholder="Masukkan kode dari QR..."
-              className="w-full px-4 py-3.5 bg-surface-elevated border border-border text-text-primary text-sm placeholder:text-text-muted focus:outline-none focus:border-accent/50 transition-all text-center tracking-widest font-mono"
+              required
+              value={form.name}
+              onChange={(e) => setForm({ ...form, name: e.target.value })}
+              placeholder="e.g. Midnight Blossom"
+              className="w-full px-4 py-3.5 bg-surface-elevated border border-border text-text-primary text-sm placeholder:text-text-muted focus:outline-none focus:border-accent/50 transition-all duration-200"
             />
           </div>
 
-          {status === 'success' && (
-            <div className="p-3 bg-green-500/10 border border-green-500/30 text-center">
-              <p className="text-sm text-green-400 font-medium">✓ Terverifikasi!</p>
-              <p className="text-xs text-green-400/70 mt-1">Parfum ini asli dan terdaftar atas namamu</p>
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="block text-xs font-medium text-text-muted mb-2 tracking-wider uppercase">Brand</label>
+              <input
+                type="text"
+                value={form.brand}
+                onChange={(e) => setForm({ ...form, brand: e.target.value })}
+                className="w-full px-4 py-3.5 bg-surface-elevated border border-border text-text-primary text-sm focus:outline-none focus:border-accent/50 transition-all duration-200"
+              />
             </div>
-          )}
+            <div>
+              <label className="block text-xs font-medium text-text-muted mb-2 tracking-wider uppercase">Kategori</label>
+              <select
+                value={form.category}
+                onChange={(e) => setForm({ ...form, category: e.target.value as Perfume['category'] })}
+                className="w-full px-4 py-3.5 bg-surface-elevated border border-border text-text-primary text-sm focus:outline-none focus:border-accent/50 transition-all duration-200"
+              >
+                {categories.map((cat) => (
+                  <option key={cat} value={cat}>{categoryEmoji[cat]} {categoryLabels[cat]}</option>
+                ))}
+              </select>
+            </div>
+          </div>
 
-          {status === 'error' && (
-            <div className="p-3 bg-rose/10 border border-rose/30 text-center">
-              <p className="text-sm text-rose font-medium">✗ Kode tidak valid</p>
-              <p className="text-xs text-rose/70 mt-1">Pastikan kode minimal 6 karakter</p>
+          <div>
+            <label className="block text-xs font-medium text-text-muted mb-2 tracking-wider uppercase">Top Notes <span className="text-text-muted/40">(pisahkan koma)</span></label>
+            <input
+              type="text"
+              value={form.topNotes}
+              onChange={(e) => setForm({ ...form, topNotes: e.target.value })}
+              placeholder="Bergamot, Lemon, Pink Pepper"
+              className="w-full px-4 py-3.5 bg-surface-elevated border border-border text-text-primary text-sm placeholder:text-text-muted focus:outline-none focus:border-accent/50 transition-all duration-200"
+            />
+          </div>
+
+          <div>
+            <label className="block text-xs font-medium text-text-muted mb-2 tracking-wider uppercase">Middle Notes <span className="text-text-muted/40">(pisahkan koma)</span></label>
+            <input
+              type="text"
+              value={form.middleNotes}
+              onChange={(e) => setForm({ ...form, middleNotes: e.target.value })}
+              placeholder="Rose, Jasmine, Iris"
+              className="w-full px-4 py-3.5 bg-surface-elevated border border-border text-text-primary text-sm placeholder:text-text-muted focus:outline-none focus:border-accent/50 transition-all duration-200"
+            />
+          </div>
+
+          <div>
+            <label className="block text-xs font-medium text-text-muted mb-2 tracking-wider uppercase">Base Notes <span className="text-text-muted/40">(pisahkan koma)</span></label>
+            <input
+              type="text"
+              value={form.baseNotes}
+              onChange={(e) => setForm({ ...form, baseNotes: e.target.value })}
+              placeholder="Musk, Sandalwood, Vanilla"
+              className="w-full px-4 py-3.5 bg-surface-elevated border border-border text-text-primary text-sm placeholder:text-text-muted focus:outline-none focus:border-accent/50 transition-all duration-200"
+            />
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="block text-xs font-medium text-text-muted mb-2 tracking-wider uppercase">Rating</label>
+              <div className="flex items-center gap-1.5 py-2">
+                {[1, 2, 3, 4, 5].map((star) => (
+                  <button
+                    key={star}
+                    type="button"
+                    onClick={() => setForm({ ...form, rating: star })}
+                    className="p-0.5 hover:scale-125 transition-transform"
+                  >
+                    <Star
+                      className={`w-7 h-7 transition-colors ${
+                        star <= form.rating ? 'text-accent fill-accent' : 'text-border'
+                      }`}
+                    />
+                  </button>
+                ))}
+              </div>
             </div>
-          )}
+            <div>
+              <label className="block text-xs font-medium text-text-muted mb-2 tracking-wider uppercase">Tanggal Beli</label>
+              <input
+                type="date"
+                value={form.purchaseDate}
+                onChange={(e) => setForm({ ...form, purchaseDate: e.target.value })}
+                className="w-full px-4 py-3.5 bg-surface-elevated border border-border text-text-primary text-sm focus:outline-none focus:border-accent/50 transition-all duration-200"
+              />
+            </div>
+          </div>
+
+          <div>
+            <label className="block text-xs font-medium text-text-muted mb-2 tracking-wider uppercase">Deskripsi <span className="text-text-muted/40">(opsional)</span></label>
+            <textarea
+              value={form.description}
+              onChange={(e) => setForm({ ...form, description: e.target.value })}
+              rows={3}
+              placeholder="Ceritakan pengalamanmu dengan parfum ini..."
+              className="w-full px-4 py-3.5 bg-surface-elevated border border-border text-text-primary text-sm placeholder:text-text-muted focus:outline-none focus:border-accent/50 transition-all duration-200 resize-none"
+            />
+          </div>
 
           <button
-            onClick={handleVerify}
-            className="w-full py-3.5 bg-accent text-primary text-sm font-semibold tracking-wider uppercase hover:bg-accent-light transition-all"
+            type="submit"
+            className="w-full py-4 bg-accent text-primary text-sm font-semibold tracking-wider uppercase hover:bg-accent-light transition-all duration-300 mt-2"
           >
-            Verifikasi
+            Simpan Parfum
           </button>
-        </div>
+        </form>
       </div>
     </div>
   )
 }
 
-function extractSpotifyId(url: string): string {
-  const match = url.match(/track\/([a-zA-Z0-9]+)/)
-  return match ? match[1] : ''
+
+function MomentCard({
+  moment,
+  perfumeName,
+  onDelete,
+}: {
+  moment: Moment
+  perfumeName?: string
+  onDelete: (id: string) => void
+}) {
+  return (
+    <div className="moment-card break-inside-avoid group relative bg-surface-card border border-border overflow-hidden hover:border-accent/20 hover-glow transition-all duration-500">
+      {/* Images */}
+      {moment.images.length > 0 && (
+        <div className="relative aspect-[4/3] overflow-hidden bg-surface-elevated">
+          <img
+            src={moment.images[0]}
+            alt={moment.title}
+            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+          {moment.images.length > 1 && (
+            <div className="absolute bottom-3 right-3 px-2.5 py-1 bg-black/70 backdrop-blur-sm text-[11px] text-text-primary font-medium">
+              +{moment.images.length - 1} foto
+            </div>
+          )}
+        </div>
+      )}
+
+      <div className="p-6">
+        {/* Mood Badge */}
+        <div className="flex items-center justify-between mb-4">
+          <span
+            className="px-3 py-1 text-[11px] font-medium text-white flex items-center gap-1.5"
+            style={{ backgroundColor: moodColors[moment.mood] }}
+          >
+            {moodEmoji[moment.mood]} {moodLabels[moment.mood]}
+          </span>
+          <button
+            onClick={() => onDelete(moment.id)}
+            className="opacity-0 group-hover:opacity-100 p-2 border border-border hover:border-rose/40 text-text-muted hover:text-rose transition-all duration-200"
+            aria-label="Hapus momen"
+          >
+            <X className="w-3.5 h-3.5" />
+          </button>
+        </div>
+
+        <h3 className="font-serif text-lg text-text-primary leading-tight group-hover:text-accent transition-colors duration-300">
+          {moment.title}
+        </h3>
+        <p className="text-sm text-text-secondary mt-2 leading-relaxed line-clamp-3">{moment.description}</p>
+
+        {/* Meta */}
+        <div className="mt-4 flex flex-wrap items-center gap-3 text-[11px] text-text-muted">
+          <span className="flex items-center gap-1">
+            <Calendar className="w-3 h-3" />
+            {new Date(moment.date).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })}
+          </span>
+          {moment.location && (
+            <span className="flex items-center gap-1">
+              <MapPin className="w-3 h-3" />
+              {moment.location}
+            </span>
+          )}
+        </div>
+
+        {/* Perfume tag */}
+        {perfumeName && (
+          <div className="mt-4 inline-flex items-center gap-1.5 px-3 py-1 border border-accent/20 text-[11px] text-accent font-medium tracking-wider">
+            <span className="w-1.5 h-1.5 rounded-full bg-accent" />
+            {perfumeName}
+          </div>
+        )}
+      </div>
+    </div>
+  )
+}
+
+function AddMomentModal({
+  onClose,
+  onAdd,
+  perfumes,
+}: {
+  onClose: () => void
+  onAdd: (m: Omit<Moment, 'id'>) => void
+  perfumes: { id: string; name: string }[]
+}) {
+  const [form, setForm] = useState({
+    perfumeId: perfumes[0]?.id || '',
+    title: '',
+    description: '',
+    date: new Date().toISOString().split('T')[0],
+    location: '',
+    mood: 'peaceful' as Moment['mood'],
+    imageUrl: '',
+  })
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    onAdd({
+      perfumeId: form.perfumeId,
+      title: form.title,
+      description: form.description,
+      date: form.date,
+      location: form.location,
+      mood: form.mood,
+      images: form.imageUrl ? [form.imageUrl] : [],
+    })
+    onClose()
+  }
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+      <div className="absolute inset-0 bg-black/80 backdrop-blur-md" onClick={onClose} />
+      <div className="relative w-full max-w-lg max-h-[90vh] overflow-y-auto bg-surface-card border border-border shadow-2xl p-6 sm:p-8 animate-fade-up">
+        <button
+          onClick={onClose}
+          className="absolute top-5 right-5 p-2 hover:bg-surface-elevated transition-colors"
+          aria-label="Tutup"
+        >
+          <X className="w-5 h-5 text-text-muted" />
+        </button>
+
+        <div className="mb-8">
+          <span className="text-xs font-medium tracking-[0.3em] uppercase text-accent">Capture</span>
+          <h2 className="font-serif text-2xl text-text-primary mt-2">Momen Baru</h2>
+        </div>
+
+        <form onSubmit={handleSubmit} className="space-y-5">
+          <div>
+            <label className="block text-xs font-medium text-text-muted mb-2 tracking-wider uppercase">Judul Momen *</label>
+            <input
+              type="text"
+              required
+              value={form.title}
+              onChange={(e) => setForm({ ...form, title: e.target.value })}
+              placeholder="e.g. Dinner pertama bersama dia"
+              className="w-full px-4 py-3.5 bg-surface-elevated border border-border text-text-primary text-sm placeholder:text-text-muted focus:outline-none focus:border-accent/50 transition-all duration-200"
+            />
+          </div>
+
+          <div>
+            <label className="block text-xs font-medium text-text-muted mb-2 tracking-wider uppercase">Parfum yang Dipakai</label>
+            <select
+              value={form.perfumeId}
+              onChange={(e) => setForm({ ...form, perfumeId: e.target.value })}
+              className="w-full px-4 py-3.5 bg-surface-elevated border border-border text-text-primary text-sm focus:outline-none focus:border-accent/50 transition-all duration-200"
+            >
+              <option value="">— Pilih parfum —</option>
+              {perfumes.map((p) => (
+                <option key={p.id} value={p.id}>{p.name}</option>
+              ))}
+            </select>
+          </div>
+
+          <div>
+            <label className="block text-xs font-medium text-text-muted mb-2 tracking-wider uppercase">Ceritakan Momennya *</label>
+            <textarea
+              required
+              value={form.description}
+              onChange={(e) => setForm({ ...form, description: e.target.value })}
+              rows={3}
+              placeholder="Apa yang terjadi? Bagaimana perasaanmu?"
+              className="w-full px-4 py-3.5 bg-surface-elevated border border-border text-text-primary text-sm placeholder:text-text-muted focus:outline-none focus:border-accent/50 transition-all duration-200 resize-none"
+            />
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="block text-xs font-medium text-text-muted mb-2 tracking-wider uppercase">Tanggal</label>
+              <input
+                type="date"
+                value={form.date}
+                onChange={(e) => setForm({ ...form, date: e.target.value })}
+                className="w-full px-4 py-3.5 bg-surface-elevated border border-border text-text-primary text-sm focus:outline-none focus:border-accent/50 transition-all duration-200"
+              />
+            </div>
+            <div>
+              <label className="block text-xs font-medium text-text-muted mb-2 tracking-wider uppercase">Lokasi</label>
+              <input
+                type="text"
+                value={form.location}
+                onChange={(e) => setForm({ ...form, location: e.target.value })}
+                placeholder="Bandung"
+                className="w-full px-4 py-3.5 bg-surface-elevated border border-border text-text-primary text-sm placeholder:text-text-muted focus:outline-none focus:border-accent/50 transition-all duration-200"
+              />
+            </div>
+          </div>
+
+          {/* Mood Selection */}
+          <div>
+            <label className="block text-xs font-medium text-text-muted mb-2 tracking-wider uppercase">Mood</label>
+            <div className="grid grid-cols-3 gap-2">
+              {moods.map((mood) => (
+                <button
+                  key={mood}
+                  type="button"
+                  onClick={() => setForm({ ...form, mood })}
+                  className={`px-3 py-2.5 text-xs font-medium transition-all duration-200 flex items-center gap-1.5 justify-center ${
+                    form.mood === mood
+                      ? 'border-2 border-accent bg-accent/10 text-accent'
+                      : 'bg-surface-elevated border border-border text-text-secondary hover:border-accent/30'
+                  }`}
+                >
+                  <span>{moodEmoji[mood]}</span>
+                  {moodLabels[mood]}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Image URL */}
+          <div>
+            <label className="block text-xs font-medium text-text-muted mb-2 tracking-wider uppercase">
+              <span className="flex items-center gap-1.5">
+                <ImageIcon className="w-3.5 h-3.5" />
+                URL Foto (opsional)
+              </span>
+            </label>
+            <input
+              type="url"
+              value={form.imageUrl}
+              onChange={(e) => setForm({ ...form, imageUrl: e.target.value })}
+              placeholder="https://example.com/foto.jpg"
+              className="w-full px-4 py-3.5 bg-surface-elevated border border-border text-text-primary text-sm placeholder:text-text-muted focus:outline-none focus:border-accent/50 transition-all duration-200"
+            />
+          </div>
+
+          <button
+            type="submit"
+            className="w-full py-4 bg-accent text-primary text-sm font-semibold tracking-wider uppercase hover:bg-accent-light transition-all duration-300 mt-2"
+          >
+            Simpan Momen
+          </button>
+        </form>
+      </div>
+    </div>
+  )
 }
